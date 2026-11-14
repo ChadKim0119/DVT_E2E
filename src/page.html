@@ -632,7 +632,7 @@ body.open .panel { transform: none; }
 .ed-layer { float: left; position: relative; width: 0; height: 0; z-index: 6; pointer-events: none; }
 body:not(.staged) .ed-layer, body:not(.staged) #ed-toggle { display: none; }
 .ed-probe { position: absolute; left: 0; top: 0; width: 1000px; height: 1px; visibility: hidden; }
-.ed-s { position: absolute; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; font: 600 14px/1.3 var(--font); white-space: pre-wrap; overflow: hidden; pointer-events: none; }
+.ed-s { position: absolute; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; font: 500 14px/1.3 var(--font); white-space: pre-wrap; overflow: hidden; pointer-events: none; }
 .ed-l { position: absolute; overflow: visible; pointer-events: none; }
 .ed-l .ed-hit { pointer-events: none; }
 body.editing .ed-s { pointer-events: auto; cursor: move; }
@@ -666,6 +666,10 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .ed-h[data-h=e], .ed-h[data-h=w] { cursor: ew-resize; }
 .ed-h[data-h=ne], .ed-h[data-h=sw] { cursor: nesw-resize; }
 .ed-h[data-h=a], .ed-h[data-h=b] { cursor: move; }
+.ed-fm { display: inline-flex; gap: 6px; }
+.ed-ui:not([data-sel="el"]):not([data-sel="shape"]):not([data-edit="1"]) .c-fm, .ed-ui[data-line="1"] .c-fm { display: none !important; }
+.ed-ui [data-f] { min-width: 28px; padding: 5px 7px; }
+.ed-ui [data-f][aria-pressed="true"] { background: var(--accent); }
 </style>
 </head>
 <body data-mode="changed">
@@ -1120,6 +1124,9 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     var on = false, tool = "sel", sel = null, selShape = 0, editing = null, pre = "", drag = null, hov = null, stale = 0, nid = 1;
     var oH = new Map(), oT = new Map(), oS = new Map();
     var COLOR = /^(#[0-9a-fA-F]{3,8}|none|transparent)$/, KINDS = { rect: 1, ellipse: 1, line: 1, arrow: 1, text: 1 };
+    var SP = { bg: "background", fg: "color", fw: "fontWeight", fi: "fontStyle", td: "textDecoration", fs: "fontSize" }; /* 저장 키 → CSS */
+    var SV = { bg: COLOR, fg: COLOR, fw: /^(400|700)$/, fi: /^(italic|normal)$/, td: /^(none|underline|line-through|underline line-through)$/, fs: /^\d{1,3}(\.\d)?px$/ };
+    var styleOf = function (el) { var o = {}; Object.keys(SP).forEach(function (k) { o[k] = el.style[SP[k]]; }); return o; };
     var Q = function (s, r) { return (r || document).querySelector(s); };
     var kids = function (el) { return Array.prototype.filter.call(el.children, function (c) { return !c.classList.contains("ed-layer"); }); };
     var norm = function (el) { return el.textContent.replace(/\s+/g, " ").trim(); };
@@ -1141,7 +1148,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       (function walk(n) {
         Array.prototype.slice.call(n.childNodes).forEach(function (c) {
           if (c.nodeType === 3) return;
-          if (c.nodeType !== 1 || !/^(B|I|U|STRONG|EM|SMALL|SPAN|BR|SUP|SUB|A)$/.test(c.tagName)) { c.replaceWith(document.createTextNode(c.textContent || "")); return; }
+          if (c.nodeType !== 1 || !/^(B|I|U|S|STRIKE|DEL|STRONG|EM|SMALL|SPAN|BR|SUP|SUB|A)$/.test(c.tagName)) { c.replaceWith(document.createTextNode(c.textContent || "")); return; }
           Array.prototype.slice.call(c.attributes).forEach(function (a) {
             var v = a.value, ok = a.name === "class" || a.name === "style" || a.name === "title" || (/^data-/.test(a.name) && a.name !== "data-sum" && a.name !== "data-sp") || (a.name === "href" && /^(https?:|#)/.test(v));
             if (!ok || /url\(|expression|javascript:/i.test(v)) c.removeAttribute(a.name);
@@ -1157,9 +1164,9 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     function remember(el) { if (!oH.has(el)) { oH.set(el, el.innerHTML); oT.set(el, norm(el)); } }
     function applyAll() {
       oH.forEach(function (h, el) { el.innerHTML = h; });
-      oS.forEach(function (v, el) { el.style.background = v.bg; el.style.color = v.fg; });
+      oS.forEach(function (v, el) { Object.keys(SP).forEach(function (k) { el.style[SP[k]] = v[k]; }); });
       oH.clear(); oT.clear(); oS.clear(); stale = 0;
-      Object.keys(S.styles).forEach(function (k) { var v = S.styles[k], e = find(k, v.o); if (e) { oS.set(e, { bg: e.style.background, fg: e.style.color }); if (v.bg) e.style.background = v.bg; if (v.fg) e.style.color = v.fg; } });
+      Object.keys(S.styles).forEach(function (k) { var v = S.styles[k], e = find(k, v.o); if (e) { oS.set(e, styleOf(e)); Object.keys(SP).forEach(function (n) { if (v[n]) e.style[SP[n]] = v[n]; }); } });
       Object.keys(S.texts).forEach(function (k) { var v = S.texts[k], e = find(k, v.o); if (e) { remember(e); e.innerHTML = clean(v.h); } });
       if (sel && !document.contains(sel)) sel = null;
       renderShapes(); fit(); refresh();
@@ -1183,7 +1190,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
         return d.firstChild;
       }
       d.className = "ed-s"; d.setAttribute("data-id", s.id);
-      d.style.cssText = "left:" + s.x + "px;top:" + s.y + "px;width:" + s.w + "px;height:" + s.h + "px;background:" + s.fill + ";border:" + (s.st === "none" ? 0 : s.sw) + "px solid " + (s.st === "none" ? "transparent" : s.st) + ";border-radius:" + (s.k === "ellipse" ? "50%" : "6px") + ";color:" + s.tc;
+      d.style.cssText = "left:" + s.x + "px;top:" + s.y + "px;width:" + s.w + "px;height:" + s.h + "px;background:" + s.fill + ";border:" + (s.st === "none" ? 0 : s.sw) + "px solid " + (s.st === "none" ? "transparent" : s.st) + ";border-radius:" + (s.k === "ellipse" ? "50%" : "6px") + ";color:" + s.tc + (s.fw ? ";font-weight:" + s.fw : "") + (s.fi ? ";font-style:" + s.fi : "") + (s.td ? ";text-decoration:" + s.td : "") + (s.fs ? ";font-size:" + s.fs : "");
       d.textContent = s.t || "";
       return d;
     }
@@ -1215,21 +1222,47 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       else if (sel) { var c = getComputedStyle(sel); v.bg = toHex(c.backgroundColor); v.fg = toHex(c.color); }
       ["bg", "fg", "st"].forEach(function (n) { var i = $("ed-" + n); if (i) i.value = v[n]; });
       var u = $("ed-ui"); if (u) { u.setAttribute("data-sel", s ? "shape" : sel ? "el" : ""); u.setAttribute("data-line", s && (s.k === "line" || s.k === "arrow") ? "1" : ""); }
+      syncFmt();
     }
     function snap() { if (!snapped) { hist.push(JSON.stringify(S)); snapped = true; } }
-    function paint(n, val) {
-      var s = byId(selShape);
-      if (s) { snap(); if (n === "bg") s.fill = val; else if (n === "fg") s.tc = val; else s.st = val; renderShapes(); }
-      else if (sel) {
-        snap(); var k = key(sel), v = S.styles[k] || (S.styles[k] = { o: oT.has(sel) ? oT.get(sel) : norm(sel) });
-        if (!oS.has(sel)) oS.set(sel, { bg: sel.style.background, fg: sel.style.color });
-        if (n === "bg") { v.bg = val; sel.style.background = val; } else if (n === "fg") { v.fg = val; sel.style.color = val; }
+    function tgt() { var s = byId(selShape); return { s: s, el: s ? null : (sel || (editing && !editing.getAttribute("data-id") ? editing : null)) }; }
+    function paint(n, val) { /* 선택된 도형 · 블록(또는 편집 중인 블록) 전체에 적용 */
+      var t = tgt();
+      if (t.s) { snap(); if (n === "bg") t.s.fill = val; else if (n === "fg") t.s.tc = val; else if (n === "st") t.s.st = val; else t.s[n] = val; renderShapes(); }
+      else if (t.el) {
+        snap(); var el = t.el, k = key(el), v = S.styles[k] || (S.styles[k] = { o: oT.has(el) ? oT.get(el) : norm(el) });
+        if (!oS.has(el)) oS.set(el, styleOf(el));
+        v[n] = val; el.style[SP[n]] = val;
       } else return;
       refresh();
     }
+    function fmtState() {
+      var t = tgt(), q = function (c) { try { return document.queryCommandState(c); } catch (e) { return false; } };
+      if (t.s) return { bold: t.s.fw === "700", italic: t.s.fi === "italic", underline: /underline/.test(t.s.td || ""), strike: /line-through/.test(t.s.td || "") };
+      if (editing && t.el === editing) return { bold: q("bold"), italic: q("italic"), underline: q("underline"), strike: q("strikeThrough") };
+      if (t.el) { var c = getComputedStyle(t.el); return { bold: parseInt(c.fontWeight, 10) >= 600, italic: c.fontStyle === "italic", underline: /underline/.test(c.textDecorationLine), strike: /line-through/.test(c.textDecorationLine) }; }
+      return null;
+    }
+    function syncFmt() { var f = fmtState(); Array.prototype.forEach.call(document.querySelectorAll("#ed-ui [data-f]"), function (b) { var v = !!(f && f[b.getAttribute("data-f")]); b.classList.toggle("on", v); b.setAttribute("aria-pressed", String(v)); }); }
+    var CMD = { bold: "bold", italic: "italic", underline: "underline", strike: "strikeThrough" };
+    function fmt(k) {
+      var t = tgt(); if (!t.s && !t.el) return;
+      if (!t.s && editing && t.el === editing) { document.execCommand(CMD[k], false, null); syncFmt(); return; } /* 글자를 편집 중이면 선택한 글자에만 */
+      if (t.s) stopEdit();
+      var c = fmtState(); snapped = false;
+      if (k === "bold") paint("fw", c.bold ? "400" : "700");
+      else if (k === "italic") paint("fi", c.italic ? "normal" : "italic");
+      else { var u = k === "underline" ? !c.underline : c.underline, x = k === "strike" ? !c.strike : c.strike; paint("td", u || x ? [u && "underline", x && "line-through"].filter(Boolean).join(" ") : "none"); }
+      snapped = false; syncFmt();
+    }
+    function size(d) { /* 글자 크기는 블록 · 글상자 전체 단위 */
+      var t = tgt(); if (!t.s && !t.el) return; if (t.s) stopEdit();
+      var cur = t.s ? parseFloat(t.s.fs || 14) : parseFloat(getComputedStyle(t.el).fontSize);
+      snapped = false; paint("fs", Math.max(8, Math.min(120, Math.round(cur + d))) + "px"); snapped = false;
+    }
 
     /* ── 글자 편집 ── */
-    var tidy = function (h) { return clean(h).replace(/(<br>)+$/, ""); };
+    var tidy = function (h) { return clean(h).replace(/(<br>)+((<\/[a-z]+>)*)$/, "$2"); };
     function shapeText(el) { var out = ""; (function w(n) { n.childNodes.forEach(function (c) { if (c.nodeType === 3) out += c.nodeValue; else if (c.nodeName === "BR") out += "\n"; else w(c); }); })(el); return out.replace(/\n+$/, ""); }
     function put(text) { /* 커서 위치에 글자 삽입, 줄바꿈은 <br> 로 */
       var sl = getSelection(); if (!editing || !sl.rangeCount || !editing.contains(sl.anchorNode)) return;
@@ -1238,9 +1271,10 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
         if (i) { last = document.createElement("br"); r.insertNode(last); r.setStartAfter(last); r.collapse(true); }
         if (ln) { last = document.createTextNode(ln); r.insertNode(last); r.setStartAfter(last); r.collapse(true); }
       });
-      if (last && last.nodeName === "BR" && last.parentNode === editing) { /* 끝 줄바꿈은 뒤에 자리표시 <br> 가 있어야 커서가 다음 줄로 감 */
-        var nx = last.nextSibling; if (nx && nx.nodeType === 3 && !nx.nodeValue) { nx.remove(); nx = last.nextSibling; } /* insertNode 가 남기는 빈 텍스트 노드는 내용이 아님 */
-        if (!nx) editing.appendChild(document.createElement("br"));
+      if (last && last.nodeName === "BR") { /* 끝 줄바꿈은 뒤에 자리표시 <br> 가 있어야 커서가 다음 줄로 감 */
+        var more = false;
+        for (var n = last; n !== editing && !more; n = n.parentNode) { var x = n.nextSibling; while (x && x.nodeType === 3 && !x.nodeValue) { var y = x.nextSibling; x.remove(); x = y; } if (x) more = true; } /* 빈 텍스트 노드는 내용이 아님 */
+        if (!more) last.parentNode.appendChild(document.createElement("br"));
       }
       sl.removeAllRanges(); sl.addRange(r);
     }
@@ -1249,13 +1283,14 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       stopEdit(); if (!isShape) deselect(); /* 도형은 deselect 가 DOM 을 다시 그려 대상이 끊김 */
       editing = el; pre = JSON.stringify(S);
       if (!isShape) remember(el);
-      el.classList.add("ed-ing"); el.setAttribute("contenteditable", "plaintext-only");
-      if (el.contentEditable !== "plaintext-only") el.setAttribute("contenteditable", "true");
+      el.classList.add("ed-ing"); el.setAttribute("contenteditable", isShape ? "plaintext-only" : "true"); /* 페이지 글자는 서식(굵게 등)이 필요해 true, 도형 글은 순수 글자 */
+      if (isShape && el.contentEditable !== "plaintext-only") el.setAttribute("contenteditable", "true");
+      if (!isShape) { try { document.execCommand("styleWithCSS", false, false); } catch (e) {} $("ed-ui").setAttribute("data-edit", "1"); }
       el.focus();
       var sl = getSelection(); if (!sl.anchorNode || !el.contains(sl.anchorNode)) { var r = document.createRange(); r.selectNodeContents(el); r.collapse(false); sl.removeAllRanges(); sl.addRange(r); }
     }
     function stopEdit() {
-      var el = editing; if (!el) return; editing = null;
+      var el = editing; if (!el) return; editing = null; $("ed-ui").removeAttribute("data-edit");
       el.removeAttribute("contenteditable"); el.classList.remove("ed-ing");
       var id = +el.getAttribute("data-id"), s = id && byId(id);
       if (s) { s.t = shapeText(el); renderShapes(); }
@@ -1347,7 +1382,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       return {
         v: 1,
         texts: Object.keys(S.texts).sort().map(function (k) { var a = sp(k), v = S.texts[k]; a.o = v.o; a.h = v.h; return a; }),
-        styles: Object.keys(S.styles).sort().map(function (k) { var a = sp(k), v = S.styles[k]; a.o = v.o; if (v.bg) a.bg = v.bg; if (v.fg) a.fg = v.fg; return a; }),
+        styles: Object.keys(S.styles).sort().map(function (k) { var a = sp(k), v = S.styles[k]; a.o = v.o; Object.keys(SP).forEach(function (n) { if (v[n]) a[n] = v[n]; }); return a; }),
         shapes: S.shapes
       };
     }
@@ -1356,12 +1391,13 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       (j.texts || []).forEach(function (x) { if (x && typeof x.p === "string" && typeof x.path === "string") S.texts[x.p + "|" + x.path] = { o: String(x.o || ""), h: String(x.h || "") }; });
       (j.styles || []).forEach(function (x) {
         if (!x || typeof x.p !== "string" || typeof x.path !== "string") return;
-        var v = { o: String(x.o || "") }; if (COLOR.test(x.bg)) v.bg = x.bg; if (COLOR.test(x.fg)) v.fg = x.fg; S.styles[x.p + "|" + x.path] = v;
+        var v = { o: String(x.o || "") }; Object.keys(SP).forEach(function (n) { if (SV[n].test(x[n])) v[n] = x[n]; }); S.styles[x.p + "|" + x.path] = v;
       });
       (j.shapes || []).forEach(function (x) {
         if (!x || !KINDS[x.k] || typeof x.p !== "string" || !COLOR.test(x.st) || !COLOR.test(x.fill) || !COLOR.test(x.tc)) return;
         var s = { id: num(x.id), p: x.p, k: x.k, x: num(x.x), y: num(x.y), sw: num(x.sw), st: x.st, fill: x.fill, tc: x.tc, t: String(x.t || "").slice(0, 500) };
         if (x.k === "line" || x.k === "arrow") { s.x2 = num(x.x2); s.y2 = num(x.y2); } else { s.w = num(x.w); s.h = num(x.h); }
+        ["fw", "fi", "td", "fs"].forEach(function (n) { if (SV[n].test(x[n])) s[n] = x[n]; });
         if (Object.keys(s).every(function (n) { return s[n] !== null; })) S.shapes.push(s);
       });
       nid = S.shapes.reduce(function (m, s) { return Math.max(m, s.id + 1); }, 1);
@@ -1405,16 +1441,20 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     ui.id = "ed-ui"; ui.className = "ed-ui"; ui.hidden = true;
     ui.innerHTML = '<div class="ed-row"><button type="button" data-t="sel" class="on" title="선택 · 더블클릭으로 글자 수정">선택</button><button type="button" data-t="rect">▭ 사각형</button><button type="button" data-t="ellipse">◯ 원</button><button type="button" data-t="line">╱ 선</button><button type="button" data-t="arrow">→ 화살표</button><button type="button" data-t="text">T 글상자</button>' +
       '<span class="sp"></span><label class="c-bg">배경 <input type="color" id="ed-bg"></label><button type="button" id="ed-nobg" class="c-bg" title="배경 없음(투명)">없음</button><label class="c-fg">글자 <input type="color" id="ed-fg"></label><label class="c-st">선 <input type="color" id="ed-st"></label>' +
-      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 색 수정을 취소">색 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo" title="되돌리기 (Ctrl/⌘+Z)" aria-label="되돌리기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>' +
+      '<span class="sp c-fm"></span><span class="c-fm ed-fm"><button type="button" data-f="bold" title="굵게 (Ctrl+B)"><b>B</b></button><button type="button" data-f="italic" title="기울임 (Ctrl+I)"><i>I</i></button><button type="button" data-f="underline" title="밑줄 (Ctrl+U)"><u>U</u></button><button type="button" data-f="strike" title="취소선"><s>S</s></button><button type="button" data-z="-2" title="글자 작게 (블록·글상자 전체)">A−</button><button type="button" data-z="2" title="글자 크게 (블록·글상자 전체)">A+</button></span>' +
+      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 서식(색·굵기·크기) 수정을 취소">서식 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo" title="되돌리기 (Ctrl/⌘+Z)" aria-label="되돌리기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>' +
       '<span class="sp"></span><button type="button" id="ed-save" class="pri">저장 (git)</button><button type="button" id="ed-tok" title="GitHub 토큰 입력/삭제">토큰</button></div><div class="ed-msg" id="ed-msg" role="status"></div>';
     document.body.appendChild(ui);
     var tg = document.createElement("button");
     tg.type = "button"; tg.id = "ed-toggle"; tg.className = "pg-back"; tg.setAttribute("aria-pressed", "false"); tg.title = "화면 편집 (글자 · 도형 · 색상)"; tg.textContent = "✎ 편집";
     $("fs").parentNode.insertBefore(tg, $("fs"));
     tg.addEventListener("click", function () { setOn(!on); });
+    ui.addEventListener("mousedown", function (ev) { if (ev.target.closest("[data-f],[data-z]")) ev.preventDefault(); }); /* 서식 버튼은 글자 선택·편집 상태를 유지 */
     ui.addEventListener("click", function (ev) {
       var b = ev.target.closest("button"); if (!b) return;
       if (b.hasAttribute("data-t")) { stopEdit(); deselect(); setTool(b.getAttribute("data-t")); }
+      else if (b.hasAttribute("data-f")) fmt(b.getAttribute("data-f"));
+      else if (b.hasAttribute("data-z")) size(+b.getAttribute("data-z"));
       else if (b.id === "ed-save") save();
       else if (b.id === "ed-tok") { askToken(); msg(token() ? "토큰을 저장했습니다." : "토큰을 삭제했습니다."); }
       else if (b.id === "ed-undo") undo();
@@ -1428,6 +1468,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       i.addEventListener("input", function () { paint(n, i.value); });
       i.addEventListener("change", function () { snapped = false; });
     });
+    document.addEventListener("selectionchange", function () { if (on && editing) syncFmt(); });
     window.addEventListener("beforeunload", function (ev) { if (on && sig() !== savedSig) { ev.preventDefault(); ev.returnValue = ""; } });
     window.addEventListener("resize", function () { setTimeout(function () { if (on && !document.body.classList.contains("staged")) setOn(false); }, 250); });
 
