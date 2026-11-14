@@ -152,3 +152,9 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .ed-ui[data-sel="el"] .c-st, .ed-ui[data-sel="el"] .c-sh, .ed-ui[data-sel="shape"] .c-el, .ed-ui[data-line="1"] .c-bg, .ed-ui[data-line="1"] .c-fg { display: none; }
 .ed-msg { margin-top: 5px; opacity: .85; }
 .ed-msg.bad { color: #ffb3d6; opacity: 1; }
+.ed-ui #ed-undo { padding: 5px 8px; }
+.ed-ui #ed-undo svg { display: block; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ed-h[data-h=n], .ed-h[data-h=s] { cursor: ns-resize; }
+.ed-h[data-h=e], .ed-h[data-h=w] { cursor: ew-resize; }
+.ed-h[data-h=ne], .ed-h[data-h=sw] { cursor: nesw-resize; }
+.ed-h[data-h=a], .ed-h[data-h=b] { cursor: move; }

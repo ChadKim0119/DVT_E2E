@@ -74,6 +74,7 @@
       d.textContent = s.t || "";
       return d;
     }
+    function HP(s) { var x = s.x, y = s.y, w = s.w, h = s.h; return [["nw", x, y], ["n", x + w / 2, y], ["ne", x + w, y], ["e", x + w, y + h / 2], ["se", x + w, y + h], ["s", x + w / 2, y + h], ["sw", x, y + h], ["w", x, y + h / 2]]; }
     function renderShapes() {
       pages.forEach(function (pg) {
         var l = layer(pg);
@@ -83,7 +84,7 @@
           var e = mkShape(s); if (s.id === selShape) e.classList.add("ed-sel"); l.appendChild(e);
         });
         var s = byId(selShape);
-        if (s && s.p === pg.id) (s.k === "line" || s.k === "arrow" ? [["a", s.x, s.y], ["b", s.x2, s.y2]] : [["se", s.x + s.w, s.y + s.h]]).forEach(function (h) {
+        if (s && s.p === pg.id) (s.k === "line" || s.k === "arrow" ? [["a", s.x, s.y], ["b", s.x2, s.y2]] : HP(s)).forEach(function (h) {
           var e = document.createElement("i"); e.className = "ed-h"; e.setAttribute("data-h", h[0]); e.style.left = (h[1] - 6) + "px"; e.style.top = (h[2] - 6) + "px"; l.appendChild(e);
         });
       });
@@ -115,6 +116,21 @@
     }
 
     /* ── 글자 편집 ── */
+    var tidy = function (h) { return clean(h).replace(/(<br>)+$/, ""); };
+    function shapeText(el) { var out = ""; (function w(n) { n.childNodes.forEach(function (c) { if (c.nodeType === 3) out += c.nodeValue; else if (c.nodeName === "BR") out += "\n"; else w(c); }); })(el); return out.replace(/\n+$/, ""); }
+    function put(text) { /* 커서 위치에 글자 삽입, 줄바꿈은 <br> 로 */
+      var sl = getSelection(); if (!editing || !sl.rangeCount || !editing.contains(sl.anchorNode)) return;
+      var r = sl.getRangeAt(0), last; r.deleteContents();
+      String(text).replace(/\r\n?/g, "\n").split("\n").forEach(function (ln, i) {
+        if (i) { last = document.createElement("br"); r.insertNode(last); r.setStartAfter(last); r.collapse(true); }
+        if (ln) { last = document.createTextNode(ln); r.insertNode(last); r.setStartAfter(last); r.collapse(true); }
+      });
+      if (last && last.nodeName === "BR" && last.parentNode === editing) { /* 끝 줄바꿈은 뒤에 자리표시 <br> 가 있어야 커서가 다음 줄로 감 */
+        var nx = last.nextSibling; if (nx && nx.nodeType === 3 && !nx.nodeValue) { nx.remove(); nx = last.nextSibling; } /* insertNode 가 남기는 빈 텍스트 노드는 내용이 아님 */
+        if (!nx) editing.appendChild(document.createElement("br"));
+      }
+      sl.removeAllRanges(); sl.addRange(r);
+    }
     function startEdit(el) {
       var isShape = !!el.getAttribute("data-id");
       stopEdit(); if (!isShape) deselect(); /* 도형은 deselect 가 DOM 을 다시 그려 대상이 끊김 */
@@ -129,8 +145,8 @@
       var el = editing; if (!el) return; editing = null;
       el.removeAttribute("contenteditable"); el.classList.remove("ed-ing");
       var id = +el.getAttribute("data-id"), s = id && byId(id);
-      if (s) s.t = el.textContent;
-      else { var k = key(el), h = clean(el.innerHTML); if (h === clean(oH.get(el))) delete S.texts[k]; else S.texts[k] = { o: oT.get(el), h: h }; }
+      if (s) { s.t = shapeText(el); renderShapes(); }
+      else { var k = key(el), h = tidy(el.innerHTML), same = h === tidy(oH.get(el)); if (same) delete S.texts[k]; else S.texts[k] = { o: oT.get(el), h: h }; el.innerHTML = same ? oH.get(el) : h; /* 화면도 저장값(자리표시 <br> 제거)과 똑같이 */ }
       if (JSON.stringify(S) !== pre) hist.push(pre);
       fit(); refresh();
     }
@@ -164,7 +180,12 @@
       if (drag.m === "mv") { s.x = r1(o.x + dx); s.y = r1(o.y + dy); if (line) { s.x2 = r1(o.x2 + dx); s.y2 = r1(o.y2 + dy); } }
       else if (drag.m === "new") { if (line) { s.x2 = r1(q.x); s.y2 = r1(q.y); } else { s.x = r1(Math.min(drag.p.x, q.x)); s.y = r1(Math.min(drag.p.y, q.y)); s.w = r1(Math.abs(dx)); s.h = r1(Math.abs(dy)); } }
       else if (line) { if (drag.h === "a") { s.x = r1(o.x + dx); s.y = r1(o.y + dy); } else { s.x2 = r1(o.x2 + dx); s.y2 = r1(o.y2 + dy); } }
-      else { s.w = Math.max(12, r1(o.w + dx)); s.h = Math.max(12, r1(o.h + dy)); }
+      else {
+        var hh = drag.h, nw = o.w, nh = o.h; s.x = o.x; s.y = o.y;
+        if (/e/.test(hh)) nw = Math.max(12, o.w + dx); if (/s/.test(hh)) nh = Math.max(12, o.h + dy);
+        if (/w/.test(hh)) { nw = Math.max(12, o.w - dx); s.x = r1(o.x + o.w - nw); } if (/n/.test(hh)) { nh = Math.max(12, o.h - dy); s.y = r1(o.y + o.h - nh); }
+        s.w = r1(nw); s.h = r1(nh);
+      }
       renderShapes();
     });
     document.addEventListener("pointerup", function () {
@@ -191,13 +212,14 @@
       if (!on) return; if (hov) hov.classList.remove("ed-hov"); hov = null;
       var t = ev.target; if (!editing && t.closest && t.closest("#app") && !t.closest(".ed-layer")) { hov = t; t.classList.add("ed-hov"); }
     });
+    document.addEventListener("paste", function (ev) { if (on && editing && editing.contains(ev.target)) { ev.preventDefault(); put((ev.clipboardData || window.clipboardData).getData("text/plain")); } }, true);
     document.addEventListener("focusout", function (ev) { if (editing && ev.target === editing) setTimeout(stopEdit, 0); });
     document.addEventListener("keydown", function (ev) {
       if (!on) return;
       var typing = ev.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName);
       if (typing) {
         ev.stopPropagation();
-        if (editing && ev.key === "Enter" && !ev.shiftKey) { ev.preventDefault(); stopEdit(); }
+        if (editing && ev.key === "Enter") { ev.preventDefault(); if (ev.ctrlKey || ev.metaKey) stopEdit(); else put("\n"); }
         else if (ev.key === "Escape") { ev.preventDefault(); if (editing) stopEdit(); else ev.target.blur(); }
         return;
       }
@@ -270,7 +292,7 @@
     ui.id = "ed-ui"; ui.className = "ed-ui"; ui.hidden = true;
     ui.innerHTML = '<div class="ed-row"><button type="button" data-t="sel" class="on" title="선택 · 더블클릭으로 글자 수정">선택</button><button type="button" data-t="rect">▭ 사각형</button><button type="button" data-t="ellipse">◯ 원</button><button type="button" data-t="line">╱ 선</button><button type="button" data-t="arrow">→ 화살표</button><button type="button" data-t="text">T 글상자</button>' +
       '<span class="sp"></span><label class="c-bg">배경 <input type="color" id="ed-bg"></label><button type="button" id="ed-nobg" class="c-bg" title="배경 없음(투명)">없음</button><label class="c-fg">글자 <input type="color" id="ed-fg"></label><label class="c-st">선 <input type="color" id="ed-st"></label>' +
-      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 색 수정을 취소">색 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo">↶ 되돌리기</button>' +
+      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 색 수정을 취소">색 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo" title="되돌리기 (Ctrl/⌘+Z)" aria-label="되돌리기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>' +
       '<span class="sp"></span><button type="button" id="ed-save" class="pri">저장 (git)</button><button type="button" id="ed-tok" title="GitHub 토큰 입력/삭제">토큰</button></div><div class="ed-msg" id="ed-msg" role="status"></div>';
     document.body.appendChild(ui);
     var tg = document.createElement("button");
