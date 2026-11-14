@@ -1,10 +1,10 @@
   /* ── paging: 메인 1 ~ 4, then Appendix ── */
-  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 5, trail = [];
-  var labels = { summary: "1 요약", rounds: "2 차수별 결과", why: "3 NT 원인", remain: "4 남은 TC", plan: "5 일정 · 제안", appendix: "Appendix 목차" };
+  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 4, NM3 = 3, trail = [];
+  var labels = { situation: "1 현황 · 쟁점", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
   pages.forEach(function (p) { p.classList.add("page"); });
   var dotHtml = function (p, i) {
     var main = i < NMAIN, lab = labels[p.id] || p.querySelector(".code").textContent.replace("Appendix", "") + " " + p.querySelector("h3.t").textContent;
-    return '<li><button type="button" class="dot' + (main ? "" : " sm") + '" data-go="' + i + '" data-label="' + esc(lab) + '" aria-label="' + esc(lab) + '">' + (main ? i + 1 : "") + '</button></li>';
+    return '<li><button type="button" class="dot' + (main ? "" : " sm") + '" data-go="' + i + '" data-label="' + esc(lab) + '" aria-label="' + esc(lab) + '">' + (main ? (i < NM3 ? i + 1 : "T") : "") + '</button></li>';
   };
   $("dots-main").innerHTML = pages.slice(0, NMAIN).map(dotHtml).join("");
   $("dots-apx").innerHTML = pages.slice(NMAIN).map(function (p, i) { return dotHtml(p, i + NMAIN); }).join("");
@@ -42,7 +42,7 @@
     Array.prototype.forEach.call(dots, function (d) { var on = +d.getAttribute("data-go") === i; d.classList.toggle("on", on); if (on) d.setAttribute("aria-current", "page"); else d.removeAttribute("aria-current"); });
     var sec = i < NMAIN ? pages[i].id : "appendix";
     Array.prototype.forEach.call(links, function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + sec); });
-    $("count").innerHTML = i < NMAIN ? "메인<br>" + (i + 1) + " / " + NMAIN : "Appendix<br>" + (i - NMAIN + 1) + " / " + (pages.length - NMAIN);
+    $("count").innerHTML = i < NM3 ? "메인<br>" + (i + 1) + " / " + NM3 : i < NMAIN ? "Timeline" : "Appendix<br>" + (i - NMAIN + 1) + " / " + (pages.length - NMAIN);
     $("prev").disabled = i === 0; $("next").disabled = i === pages.length - 1;
     $("pg-back").hidden = trail.length === 0;
     window.scrollTo(0, 0); fit(); pages[i].scrollTop = 0;

@@ -39,11 +39,11 @@ const daily = {
   ], notes: [
     "원본 표의 Planned(old)는 일자별 38·64·69·56·63, 합계 290. 10/12·10/13은 Planned(new) 82·83으로 재계획",
     "10/07 Fail 207건 → 10/13 14건: 10/07 PM 정례에서 “Block 분류 폐지, Block은 Fail로 재분류, NT는 진입 자체가 불가한 항목으로 한정”하기로 한 뒤 재판정·재시험이 이어짐",
-    "GSP DB 정리: 10/13 NT 157건 중 112건이 선행 Fail에 의한 Block(ADF 미등록, Skip Vehicle Association 등)",
+    "GSP DB 정리: 10/13 NT 157건 중 112건이 선행 Fail에 의한 Block(Skip Vehicle Association 등)",
   ] },
   r2cum: { head: ["일자", "누적 Acted", "Pass", "Fail", "NT", "비고"], rows: [
     ["10/22", "598", "199", "37", "362", "CCW 236 포함"],
-    ["10/23", "667", "350", "29", "288", "ADF 선행조건 NT를 시험 가능 조건으로 변경"],
+    ["10/23", "667", "350", "29", "288", "선행조건 NT를 시험 가능 조건으로 변경"],
     ["10/26", "755", "411", "30", "314", "Fail에 의한 Blocked 포함"],
     ["10/28", "833", "501", "16", "316", ""],
     ["10/29", "839", "512", "13", "314", ""],
@@ -71,7 +71,7 @@ const daily = {
   ], notes: [
     "11/12 Acted 8건 중 7건은 11/11 Fail 재시험(누적 Acted 55 → 56). 누적 Fail 9 → 5, NT 35 → 33",
     "OPW 9건은 2차 Fail 3 + NT 6 전량 Pass(11/12)",
-    "11/13 이후 결과는 Confluence에 아직 게시되지 않음(조회 11/14). 결과 페이지에는 첨부가 없음 — LG U+ 보안정책(SASE)으로 업로드 실패(ISS-037)",
+    "11/13 이후 결과는 Confluence에 아직 게시되지 않음(조회 11/14). 결과 페이지에는 첨부가 없음",
   ] },
 };
 
@@ -87,7 +87,6 @@ const ntWhy = {
   owners: [
     { id: "tmc", name: "TMC", sub: "일본 원청 · VDP · TSC", tone: "a" },
     { id: "tck", name: "TMKR 측 협력사", sub: "TCK(CTI) · SE파트너스(DMS)", tone: "b" },
-    { id: "lgu", name: "LG U+", sub: "단말 개통 · uCube · 장비", tone: "c" },
     { id: "dsn", name: "Dasan", sub: "개발 · 시험 수행", tone: "d" },
   ],
   blockers: [
@@ -109,15 +108,6 @@ const ntWhy = {
     { id: "dms", owner: "tck", title: "DMS 사양 변경 지속 → 시나리오 재작성", iss: "ISS-008", tc: "DMS 연동 27 TC (3차 NT 18)", when: "API 5 → 24개 반영 중",
       facts: ["10/21 PM: DVT 진행 중 DMS 추가 요구사항이 지속 유입, 10/23 기준 개발 범위 Freeze 합의", "E2E 사전준비 #9: DMS API 개통 5 → 24개 변경, 시나리오 업데이트 필요, PIC TMKR", "e-Care IF 정의서 v1.23(11/05): warningClearFlag 처리 등 변경 계속", "11/11 e-Care4: DMS 칩 생성 기준 변경 제안(선호센터 칩 우선) — 결정 대기"],
       src: ["pm1021", "pre", "db"] },
-    { id: "adf", owner: "lgu", title: "DCM 개통·ADF 미업로드 → 1차 NT의 주원인", iss: "ISS-018 · 032", tc: "1차 NT 157 중 Block 112(GSP DB)", when: "2차 착수 직후 정상화(10/23)",
-      facts: ["10/21 PM: DVT 2차는 DCM ADF 미업로드로 제한. ADF가 정상화되지 않으면 1차와 동일한 제약이 발생하므로 2차 진행 자체를 재판단", "10/21 PM: LG전자에서 Firmware 업데이트 DCM 수령, uCube 개통·단말 등록 확인 후 ADF 재시도", "2차 결과(10/23): “NT 항목 중 ADF 선행 조건에 대해서 시험 가능 조건으로 변경” → NT 362 → 288", "GSP DB: 8840 DCM은 1A SIM이라 CV 전환 불가로 사용 중단"],
-      src: ["pm1021", "r2", "db"] },
-    { id: "ucube", owner: "lgu", title: "uCube API 오류·단말 개통 불일치", iss: "ISS-032 · 018", tc: "3차 단말·요금제 시험", when: "11/11 이후 정상화 예정",
-      facts: ["GSP DB: 선개통 F30005, 부가서비스 삭제 오류, 서비스해지 F39999 — uCube 데이터 손상·6월 버전 복귀 영향", "E2E 사전준비 #11 U-Cube API 정상 처리(SU#2): ‘진행중’, PIC LGU+", "11/11 MVNO방: 오비고 MM 단말이 초기 uCube 강제 개통(LGU+ 명의)으로 조회 불가 → 검증계 서비스중지 해제"],
-      src: ["db", "pre"] },
-    { id: "cable", owner: "lgu", title: "HU-PC 연결 케이블 미보유 · 보안정책(SASE)", iss: "ISS-038 · 037", tc: "11/13 HU 업데이트 위험, 결과 문서 업로드 지연", when: "11/12까지 케이블 확보 필요",
-      facts: ["GSP DB: 11/13 HU SW 업데이트에 필요한 HU-PC 케이블이 Dasan 장비 구성에 없음, 아이나비·오비고 대여 요청", "GSP DB: 10/29부터 LG U+ SASE로 외부 Confluence·Jira 업로드 제한 → 3차 결과 첨부 업로드 실패(11/11)"],
-      src: ["db"] },
     { id: "fix", owner: "dsn", title: "2차 Fail 8건 수정 · 3차 재시험", iss: "ISS-009", tc: "GS Fail 5 · OPW Fail 3", when: "OPW 3건 11/12 Pass, GS 잔여 Fail 3",
       facts: ["11/03 PM: Fail 8건은 3차 전 수정 가능한 범위로 판단", "3차 11/12 누적: OPW 9건 전량 Pass, GS Pass 2 · Fail 3 · NT 15", "GSP DB: Dasan 측 CTI 견적 회신 누락(10/22)이 CTI 일정 홀딩에 영향"],
       src: ["pm1103", "r3", "db"] },
@@ -137,44 +127,176 @@ const remain = {
   carryNote: "3차 범위 정의는 “2차 DVT의 fail 항목과 fail에 따른 N/T 항목”(3차 결과 페이지). 3차 NT 편성은 GS 15 + e-Care 6 + DMS 21 = 42. OPW·DMS의 27은 2차 OPW NT 28과 대응한다고 보고 계산한 값으로, DMS 27건의 2차 근거 행은 결과표에서 직접 확인되지 않음(2차 Fail은 GS 5·OPW 3뿐인데 3차 DMS는 Fail 6으로 표기)",
 };
 
-// ── 일정 (11/01 ~ 12/31) ──
-const schedule = {
-  axis: { start: [2026, 11], months: 2 },
-  marker: { at: [2026, 11, 17], label: "11/17 DVT 종료(현행)" },
-  rows: [
-    { id: "dvt", label: "DVT 3차", sub: "GS · e-Care · DMS · VDP" },
-    { id: "blk", label: "선행조건 해소", sub: "외부 의존" },
-    { id: "ccw", label: "CCW 236 TC", sub: "CTI 선행" },
-    { id: "e2e", label: "Kensho E2E", sub: "E2E 세부일정 11/03" },
-  ],
-  bars: [
-    { row: "dvt", t: 0, kind: "dvt", plan: [[2026, 11, 11], [2026, 11, 17]], changed: [[2026, 11, 11], [2026, 11, 20]], pl: "3차 11/11 ~ 11/17", cl: "3차 연장(안) ~ 11/20", panel: "sched:dvt" },
-    { row: "dvt", t: 1, kind: "add", plan: [[2026, 11, 16], [2026, 11, 20]], changed: [[2026, 11, 16], [2026, 11, 20]], pl: "", cl: "NT 재수행(안)", panel: "sched:rerun" },
-    { row: "blk", t: 0, kind: "base", plan: [[2026, 11, 13], [2026, 11, 13]], changed: [[2026, 11, 13], [2026, 11, 13]], pl: "HU 업데이트", cl: "HU 업데이트", panel: "cause:hu" },
-    { row: "blk", t: 0, kind: "base", plan: [[2026, 11, 16], [2026, 11, 20]], changed: [[2026, 11, 16], [2026, 11, 20]], pl: "VDP Diag 2차", cl: "VDP Diag 2차", panel: "cause:vdp" },
-    { row: "blk", t: 1, kind: "base", plan: [[2026, 11, 13], [2026, 11, 13]], changed: [[2026, 11, 13], [2026, 11, 13]], pl: "VDP Diag 1차", cl: "VDP Diag 1차", panel: "cause:vdp" },
-    { row: "blk", t: 1, kind: "open", plan: [[2026, 12, 1], [2026, 12, 31]], changed: [[2026, 12, 1], [2026, 12, 31]], pl: "CTI 개발 완료 12월 (일자 미정)", cl: "CTI 개발 완료 12월 (일자 미정)", panel: "cause:cti" },
-    { row: "ccw", t: 0, kind: "risk", plan: [[2026, 12, 14], [2026, 12, 30]], changed: [[2026, 12, 14], [2026, 12, 30]], pl: "E2E 기간에 처음 시험", cl: "", panel: "sched:ccw" },
-    { row: "ccw", t: 1, kind: "add", plan: [[2026, 12, 1], [2026, 12, 11]], changed: [[2026, 12, 1], [2026, 12, 11]], pl: "", cl: "CTI 완료 즉시 CCW DVT(안)", panel: "sched:ccw" },
-    { row: "e2e", t: 0, kind: "e2e", plan: [[2026, 11, 23], [2026, 11, 30]], changed: [[2026, 11, 23], [2026, 11, 30]], pl: "24SU#2 LifeCycle", cl: "E2E 사전 테스트(GS)", panel: "sched:e2e" },
-    { row: "e2e", t: 0, kind: "e2e", plan: [[2026, 12, 1], [2026, 12, 11]], changed: [[2026, 12, 1], [2026, 12, 11]], pl: "중점평가 · Ecall", cl: "중점평가 · Ecall", panel: "sched:e2e" },
-    { row: "e2e", t: 1, kind: "e2e", plan: [[2026, 12, 14], [2026, 12, 30]], changed: [[2026, 12, 14], [2026, 12, 30]], pl: "e-Care · Deeplink/GSA", cl: "e-Care · Deeplink/GSA", panel: "sched:e2e" },
-  ],
-  points: [
-    { at: [2026, 11, 13], label: "11/13 HU 업데이트 · VDP Diag 1차" },
-    { at: [2026, 11, 20], label: "11/20 진척 보고회" },
-  ],
+// ── 3장 본문 + 근거(드로어) + Timeline — 2026-11-14 DVT·E2E 운영방안 논의 기준 ──
+const deck = {
+  s1: {
+    kicker: "1 / 3 · 현황과 쟁점",
+    title: "DVT 3차는 11/16 공식 종료 시점에도 Fail · NT가 남고, 원인은 외부 연동 환경에 있다. 현행 방식을 유지하면 1 ~ 2월까지 이어질 수 있다",
+    lede: "DVT 완료 기준은 Fail · NT가 없는 상태(Pass)다. 남은 건은 TMC · CTI 등 외부 연동 환경이 열려야 시험할 수 있어, 당사 개발 범위의 검증과 분리해서 판단할 필요가 있다.",
+    kpis: [
+      { k: "ev:status", small: "3차 DVT · 80 TC (11/12 누적)", v: "18", em: "/ 80 Pass", d: "Fail 5 · NT 33 · 미수행 24" },
+      { k: "ev:complete", small: "완료 기준", v: "0", em: "Fail · NT", d: "Fail · NT가 없어야 Pass로 종결", hot: true },
+      { k: "ev:cause", small: "NT 주된 원인", v: "외부 연동", em: "", d: "TMC 연동 환경 · CTI 개발 · DMS 사양 변경", small2: true },
+      { k: "ev:impact", small: "현행 유지 시 종료", v: "1 ~ 2월", em: "", d: "DK 완료 기준 · E2E 일정과 충돌", hot: true, small2: true },
+    ],
+    cols: [
+      { tag: "Situation · 사실", head: "DVT 3차는 11/16에 공식 종료된다", body: "1 · 2 · 3차 동안 NT 비중은 50% → 38% → 59%(수행분)로 줄지 않았다. 3차는 2차에서 막혔던 TC를 다시 시험하는데, 수행한 56건 중 33건이 다시 NT다.", ev: "ev:status", more: "3차 결과 근거" },
+      { tag: "Complication · 원인", head: "막고 있는 것은 당사 개발 범위 밖의 환경이다", body: "TMC 연동 환경(VDP · HU · GSA), CTI 개발(12월), DMS 사양 변경(API 5 → 24개). 당사가 개발한 로직은 내부 검증을 마쳤으나 연동 환경이 없어 시험 완료로 인정받지 못한다.", ev: "ev:cause", more: "원인 분류 근거" },
+      { tag: "Implication · 영향", head: "현행대로면 DVT 종료가 1 ~ 2월로 밀린다", body: "E2E 현행 진입(11/23)과 겹치고, DVT 기간 변경은 CCB 연계 안건이 된다. 먼저 ‘어디까지가 DVT의 범위인가’를 정해야 일정과 공수를 말할 수 있다.", ev: "ev:impact", more: "일정 영향 근거" },
+    ],
+    ask: "이번 논의에서 정할 것: ① DVT를 어떤 기준으로 종결할지 ② E2E를 어떻게 병행할지 ③ 그에 따른 공수 투입 전제",
+  },
+  s2: {
+    kicker: "2 / 3 · 제안",
+    title: "당사 개발 범위를 기준으로 DVT를 조건부 승인해 종결하고, E2E는 병행 트랙으로 진입하는 안을 제안한다",
+    lede: "현행 유지(Fail · NT 0까지 연장)와 전면 재일정은 모두 종료 시점이 불확실하다. 조건부 승인은 범위를 먼저 확정하므로 일정을 약속할 수 있는 유일한 안이다.",
+    optHead: ["", "A. 현행 유지", "B. 조건부 승인 (제안)", "C. 전면 재일정"],
+    optRows: [
+      ["방식", "Fail · NT 0이 될 때까지 DVT 연장", "당사 개발 범위만 승인 후 종결, 외부 영역은 분리", "DVT · E2E 일정 전체 재수립"],
+      ["DVT 종료", "1 ~ 2월 (외부 환경 해소에 종속)", "조건 확정 후 약 1개월 추가 검증", "재수립 일정에 따름 (미정)"],
+      ["E2E 영향", "11/23 진입과 충돌, 기간 중첩", "DVT와 이중 트랙 병행", "진입 시점 후퇴"],
+      ["필요 결정", "DVT 기간 변경 (CCB 연계)", "TMKR의 조건부 승인", "전 일정 합의"],
+    ],
+    optEv: ["ev:optA", "ev:optB", "ev:optC"],
+    scopeTitle: "조건부 승인 범위(안)",
+    scopeIn: ["서비스 가입", "ACOS 인터페이스", "VDP 연계 테스트"],
+    scopeOut: ["TMC 영역 — HU 기능 등 외부 연동 환경에 종속된 시험"],
+    scopeOpen: ["조건 항목의 최종 확정", "승인 후 개발 완료 검증의 지속 기간"],
+    decide: "TMKR 결정 요청: 위 범위로 DVT를 조건부 승인하고, 외부 영역은 별도 일정으로 분리한다. 당사가 임의로 종결하지 않고 TMKR이 판단하도록 요청하는 구조다.",
+  },
+  s3: {
+    kicker: "3 / 3 · 실행과 공수 전제",
+    title: "E2E는 회귀 테스트 중심으로 병행 진입하고, 공수는 아래 다섯 가지 전제가 충족되는 범위에서 투입한다",
+    lede: "전제가 하나라도 달라지면 일정과 공수가 함께 달라진다. 이 장표는 공수 협의의 합의 대상이다.",
+    premHead: ["#", "전제", "충족 조건", "충족되지 않으면"],
+    prem: [
+      ["1", "DVT 종결 기준", "조건부 승인 범위(서비스 가입 · ACOS IF · VDP)를 TMKR이 확정", "연장 공수는 CCB 안건으로 별도 협의"],
+      ["2", "E2E 진입 조건", "일본 측이 회귀 테스트(Regression)를 준비 — 11/16 ~ 17 협의", "E2E 전체 재일정"],
+      ["3", "외부 환경 해소", "HU 업데이트 · VDP Diag · CTI 완료 시점 확정", "해소 전 구간은 대기가 아닌 별도 범위로 구분"],
+      ["4", "범위 변경", "DMS 등 사양 변경은 TC 문서 기준으로 신규 · 재수행 범위 확정", "변경분은 근거 기준으로 별도 협의"],
+      ["5", "자료 기준", "DVT 3차 Fail 결과와 E2E 자료를 11/16에 정리 · 공유", "정리 후 통합 논의로 이월"],
+    ],
+    premEv: ["ev:p1", "ev:p2", "ev:p3", "ev:p4", "ev:p5"],
+    tracks: [
+      { h: "E2E #1 · 병행 진입", b: "회귀 테스트(Regression) + ACOS IF 기반 TC. 회귀용 24 DCM 기자재 활용(Global · ACOS 대상)", ev: "ev:e2e1" },
+      { h: "E2E #2 · 정상 상태 전제", b: "외부 환경이 정상일 때 가능한 시나리오. 현재 상태로는 불가해 순연", ev: "ev:e2e2" },
+    ],
+    next: ["11/16(월) DVT 3차 Fail 결과와 DVT · E2E 자료 정리", "11/16 ~ 17 일본 측 회귀 테스트 준비 여부 협의", "결과를 바탕으로 E2E 진입과 DVT 연장을 통합 논의"],
+    tl: "타임라인 전체 보기",
+  },
+  tl: {
+    kicker: "Timeline · DVT / E2E 운영 일정(안)",
+    title: "11/16 결과 정리와 일본 측 협의가 분기점이다 — 결과에 따라 E2E가 병행되거나 전체 재일정으로 간다",
+    lede: "점선은 미확정 구간이다. 지속 기간과 12/30의 의미는 논의 후 확정한다.",
+    start: [2026, 11, 13], days: 49,           // 11/13 ~ 12/31
+    marks: [
+      { d: [2026, 11, 13], l: "11/13", ev: "ev:t1113" },
+      { d: [2026, 11, 16], l: "11/16 (월)", ev: "ev:t1116" },
+      { d: [2026, 11, 17], l: "11/17", ev: "ev:t1117" },
+      { d: [2026, 11, 23], l: "11/23", ev: "ev:t1123" },
+      { d: [2026, 12, 30], l: "12/30", ev: "ev:t1230" },
+    ],
+    lanes: [
+      { h: "DVT", sub: "3차", bars: [
+        { a: [2026, 11, 13], b: [2026, 11, 16], t: "dvt", l: "3차 공식 종료 11/16" },
+        { a: [2026, 11, 16], b: [2026, 12, 16], t: "cond", dash: true, l: "조건부 승인 범위 검증 (약 1개월, 미확정)", ev: "ev:optB" },
+      ] },
+      { h: "외부 환경", sub: "해소 시점", bars: [
+        { a: [2026, 11, 13], b: [2026, 11, 14], t: "ext", l: "HU 업데이트", pin: true, ev: "ev:cause" },
+        { a: [2026, 11, 16], b: [2026, 11, 20], t: "ext", l: "VDP Diag 2차", ev: "ev:cause" },
+        { a: [2026, 12, 1], b: [2026, 12, 31], t: "ext", dash: true, l: "CTI 개발 완료 (12월, 일자 미정)", ev: "ev:cause" },
+      ] },
+      { h: "E2E #1", sub: "회귀 · ACOS IF", bars: [
+        { a: [2026, 11, 23], b: [2026, 12, 30], t: "e2e", l: "회귀 테스트 + ACOS IF 기반 TC (일본 측 준비 전제)", ev: "ev:e2e1" },
+      ] },
+      { h: "E2E #2", sub: "정상 상태 전제", bars: [
+        { a: [2026, 12, 1], b: [2026, 12, 30], t: "late", dash: true, l: "현재 상태로는 불가 → 순연", ev: "ev:e2e2" },
+      ] },
+    ],
+    notes: ["11/16(월) 협의 결과에 따라 E2E #1 병행 또는 전체 재일정", "DVT 기간 변경은 CCB 연계 안건"],
+  },
+  ev: {
+    status: { kicker: "근거 · 3차 DVT", title: "3차 80 TC 중 Pass 18, 미검증 62", facts: ["11/12 누적: Pass 18 · Fail 5 · NT 33 · 미수행 24 (80 TC)", "미수행 24건은 VDP Diag 신규 TC — TMC 연동이 열려야 시작(11/13 1차, 11/16 ~ 20 2차)", "수행한 56건 중 33건(59%)이 NT — 2차에서 막혔던 TC가 같은 조건에서 다시 NT", "NT 비중 추이: 1차 50%(144/290), 2차 38%(323/854), 3차 59%(33/56)"], src: ["r1", "r2", "r3"], apx: "apx-r3", apxLabel: "A8 · 3차 DVT 결과" },
+    complete: { kicker: "근거 · 완료 기준", title: "Fail · NT가 없어야 Pass", facts: ["11/14 논의: DVT 완료는 Fail · NT가 없는 상태", "회의 메모: VDP 2/24, HU 3/9 — 해당 영역은 모두 해소되어야 Pass (메모 판독 수치, 확인 필요)", "10/07 PM 합의: NT는 진입 자체가 불가한 항목, 진입 후 실패는 Fail"], src: ["pm1007"], apx: "apx-mtg", apxLabel: "A1 · 11/14 논의 요약" },
+    cause: { kicker: "근거 · 원인", title: "NT의 원인은 외부 연동 환경", facts: ["CTI 미개발: CCW 236 TC(2차 NT의 73%), 완료 12월 — TMKR 측 협력사 영역", "TMC: VDP 접속정보 지연, HU 소프트웨어(SU#1), GSA · Auth0 이슈, DTC 재현 방법 미확정", "DMS 사양 변경 지속: API 5 → 24개, 시나리오 재작성", "11/14 논의: 당사 개발 로직은 내부 검증 완료, 외부 연동 환경 부족이 주된 원인"], src: ["pm1028", "pm1103", "pre", "db"], apx: "apx-cause", apxLabel: "A5 · 차단 요인 상세" },
+    impact: { kicker: "근거 · 일정 영향", title: "현행 방식이면 1 ~ 2월", facts: ["현행 방식(Fail · NT 0까지)을 이어가면 DK 완료 기준으로 1 ~ 2월까지 걸릴 수 있다", "E2E 현행 진입 11/23과 중첩 — 11/03 PM 합의: E2E 진입 시점에는 알려진 제약으로 NT가 생기지 않도록 일정 재구성", "DVT 기간 변경은 CCB 안건과 연계된다"], src: ["pm1103", "pm1111"], apx: "apx-plan", apxLabel: "A10 · DVT 계획 변경 이력" },
+    optA: { kicker: "근거 · 대안 A", title: "현행 유지", facts: ["Fail · NT가 0이 될 때까지 DVT를 연장", "외부 환경(HU · VDP · CTI) 해소 일정에 종속되어 종료일을 약속할 수 없음", "E2E와 일정이 겹치고 DVT 기간 변경은 CCB 안건"], apx: "apx-opt", apxLabel: "A3 · 대안 비교 상세" },
+    optB: { kicker: "근거 · 대안 B (제안)", title: "조건부 승인 후 종결", facts: ["당사 개발 범위(서비스 가입 · ACOS IF · VDP 연계)에 한정해 조건부 승인", "TMC 영역(HU 기능 등)은 범위에서 제외, 별도 일정으로 분리", "승인 후에도 개발 완료 검증 약 1개월 추가", "TMKR이 판단해야 한다 — 당사가 임의로 종결하지 않음", "“우리의 개발 영역은 여기까지이고, 그 구분을 조건부 승인으로 해달라”는 요청"], apx: "apx-scope", apxLabel: "A2 · 조건부 승인 범위" },
+    optC: { kicker: "근거 · 대안 C", title: "전면 재일정", facts: ["일본 측 협의가 이루어지지 않는 경우의 대안", "DVT · E2E 일정 전체를 다시 수립하며 종료 시점은 미정"], apx: "apx-opt", apxLabel: "A3 · 대안 비교 상세" },
+    p1: { kicker: "전제 1", title: "DVT 종결 기준", facts: ["조건부 승인 범위: 서비스 가입 · ACOS 인터페이스 · VDP 연계 테스트", "승인 후 개발 완료 검증은 약 1개월(미확정)", "미승인 시 DVT 연장분은 CCB 안건으로 협의"], apx: "apx-man", apxLabel: "A4 · 공수 협의 전제" },
+    p2: { kicker: "전제 2", title: "E2E 진입 조건", facts: ["Global South · ACOS 인터페이스 E2E는 현재 불가", "회귀 테스트는 일본 측 담당이 준비하면 가능", "11/16 ~ 17 협의 결과에 따라 병행 여부 결정, 불가 시 전체 재일정"], apx: "apx-man", apxLabel: "A4 · 공수 협의 전제" },
+    p3: { kicker: "전제 3", title: "외부 환경 해소", facts: ["HU 업데이트 11/13, VDP Diag 11/16 ~ 20, CTI 개발 12월", "해소 전 구간은 시험 가능 범위가 아니므로 대기 공수와 구분"], src: ["pm1103", "pre"], apx: "apx-cause", apxLabel: "A5 · 차단 요인 상세" },
+    p4: { kicker: "전제 4", title: "범위 변경 처리", facts: ["DMS API 5 → 24개 변경, VDP Diag 24 TC는 3차 신규", "TMKR 의견(11/11, 합의 아님): 규격 변경에 따른 실제 개발 · 시험은 근거 기준으로 별도 검토 가능, 일정 지연에 따른 단순 대기는 인정 어려움"], src: ["pm1111"], apx: "apx-man", apxLabel: "A4 · 공수 협의 전제" },
+    p5: { kicker: "전제 5", title: "자료 기준", facts: ["11/16(월) 저녁까지 3차 Fail 결과 정리 — CCB · TMKR 협의의 핵심 근거", "U-Cube 등 선행 정상화 시 정리 가능한 항목을 16일에 정리, 나머지는 후속"], apx: "apx-mtg", apxLabel: "A1 · 11/14 논의 요약" },
+    e2e1: { kicker: "E2E #1", title: "회귀 테스트 + ACOS IF 기반 TC", facts: ["일본 측이 회귀 테스트를 준비하면 현 시점에서도 수행 가능", "회귀용 24 DCM 기자재는 준비 완료(사전준비 #2) — Global · ACOS 대상", "11/03 PM 합의: 시험 가능 범위를 세분화하고 시작부터 NT가 예상되는 TC를 최소화"], src: ["pm1103", "pre"], apx: "apx-pre", apxLabel: "A9 · E2E 사전준비" },
+    e2e2: { kicker: "E2E #2", title: "정상 상태를 전제로 한 시나리오", facts: ["현재 상태(외부 환경 미비)로는 수행 불가 → 순연", "E2E는 토요타 공식 검증 Event — 공식 문서(Spec · TC)를 기준으로 하며 구두 설명만으로 이슈를 종료하지 않음(11/11 PM)"], src: ["pm1111"], apx: "apx-pre", apxLabel: "A9 · E2E 사전준비" },
+    t1113: { kicker: "Timeline", title: "11/13 — HU 업데이트 · VDP Diag 1차", facts: ["MM 업데이트 후 기존 NT 요금제 · Provisioning 재검증 대상", "결과는 Confluence에 아직 게시되지 않음"], apx: "apx-cause", apxLabel: "A5 · 차단 요인 상세" },
+    t1116: { kicker: "Timeline", title: "11/16(월) — DVT 3차 공식 종료 · 자료 정리", facts: ["DVT 3차 Fail 결과 정리(저녁까지)", "DVT · E2E 자료 정리, 일본 측 협의 시작(월 ~ 화)"], apx: "apx-mtg", apxLabel: "A1 · 11/14 논의 요약" },
+    t1117: { kicker: "Timeline", title: "11/17 — 현행 DVT 종료일", facts: ["3차 결과 일정 칸: 11/17 ~ 11/19 TBD, E2E 세부일정은 11/17 종료"], src: ["r3", "sch"], apx: "apx-plan", apxLabel: "A10 · DVT 계획 변경 이력" },
+    t1123: { kicker: "Timeline", title: "11/23 — 현행 E2E 진입일", facts: ["E2E 세부일정(11/03): 24SU#2 LifeCycle 11/23 ~ 11/30"], src: ["sch"], apx: "apx-pre", apxLabel: "A9 · E2E 사전준비" },
+    t1230: { kicker: "Timeline", title: "12/30 — 회의 메모의 일정 표기", facts: ["E2E 세부일정상 e-Care E2E 종료일(12/14 ~ 12/30)과 같은 날짜로 판독. 메모의 의미는 확인 필요"], src: ["sch"], apx: "apx-pre", apxLabel: "A9 · E2E 사전준비" },
+  },
+};
+
+// 새 Appendix 4건
+const apxNew = {
+  m1: { id: "apx-mtg", code: "", title: "11/14 DVT · E2E 운영방안 논의 요약", message: "실무자 논의를 쟁점 · 방향 · 미결 · 후속 조치로 재구성했다.",
+    head: ["구분", "내용"],
+    rows: [
+      ["쟁점 1", "DVT 3차는 11/16 공식 종료이나 Fail · NT가 남음. 완료는 Fail · NT가 없어야 인정"],
+      ["원인", "TMC 연동 환경 부족이 주원인. 당사가 개발한 로직은 내부 검증 완료"],
+      ["영향", "현행 방식 유지 시 1 ~ 2월(DK 완료)까지 지속 가능"],
+      ["방향", "당사 개발 범위(서비스 가입 · ACOS IF · VDP 연계)로 한정한 조건부 승인 — TMC 범위(HU 기능) 제외. 그래도 약 1개월 추가"],
+      ["주의", "조건부 승인은 TMKR이 판단해야 한다(당사 임의 종결 불가). DVT 미완료는 CCB와 연계"],
+      ["E2E", "Global South · ACOS IF E2E는 현재 불가. 일본 측이 준비하면 회귀 테스트는 가능 → DVT + E2E 이중 트랙. 월 · 화 협의에 달림, 안 되면 전체 재일정"],
+      ["후속", "11/16 저녁까지 3차 Fail 결과 정리(핵심 근거), 선행 정상화 시 정리 가능 항목 16일 처리, 이후 E2E 진입과 DVT 연장 통합 논의"],
+      ["미결", "조건 항목 최종 범위, 지속 일정, 12/30 의미, VDP 2/24 · HU 3/9 수치의 정확한 기준"],
+    ] },
+  m2: { id: "apx-scope", code: "", title: "조건부 승인 범위(안)", message: "무엇을 승인 대상으로 하고, 무엇을 분리하는지의 구분이다. 최종 항목은 TMKR 협의로 확정한다.",
+    head: ["구분", "항목", "기준", "비고"],
+    rows: [
+      ["승인 대상", "서비스 가입", "당사 개발 · 내부 검증 완료", "승인 후 개발 완료 검증"],
+      ["승인 대상", "ACOS 인터페이스", "당사 개발 범위", "E2E #1과 연계"],
+      ["승인 대상", "VDP 연계 테스트", "당사 개발 범위", "접속정보 확보 전제"],
+      ["분리", "HU 기능 등 TMC 영역", "외부 연동 환경에 종속", "별도 일정"],
+      ["분리", "CTI 연동(CCW 236 TC)", "CTI 개발 완료(12월) 후", "별도 DVT"],
+      ["미결", "조건 항목 최종 · 지속 일정", "TMKR 협의", "—"],
+    ] },
+  m3: { id: "apx-opt", code: "", title: "대안 비교 상세 (A · B · C)", message: "세 가지 운영안의 종료 시점, 영향, 위험, 필요한 결정을 비교한다.",
+    head: ["", "A. 현행 유지", "B. 조건부 승인 (제안)", "C. 전면 재일정"],
+    rows: [
+      ["DVT 종료", "1 ~ 2월 (외부 환경 종속)", "조건 확정 후 약 1개월", "미정"],
+      ["E2E", "11/23 충돌", "병행(이중 트랙)", "후퇴"],
+      ["장점", "기준 변경 없음", "범위 확정 → 일정 약속 가능", "충돌 없이 재수립"],
+      ["위험", "종료일 불확실, 장기 공수 소요", "TMKR 승인 필요, 범위 해석 차이", "전체 지연, 합의 비용"],
+      ["필요 결정", "DVT 기간 변경(CCB 연계)", "조건부 승인", "전체 재합의"],
+      ["선택 조건", "외부 환경이 곧 정상화될 때", "그렇지 않을 때(현재)", "일본 측 협의가 불발될 때"],
+    ] },
+  m4: { id: "apx-man", code: "", title: "공수 협의 전제", message: "공수 투입은 아래 전제를 기준으로 협의한다. 전제가 바뀌면 공수도 바뀐다.",
+    head: ["#", "전제", "충족 조건", "충족되지 않으면", "공수 연계"],
+    rows: [
+      ["1", "DVT 종결 기준", "조건부 승인 범위 확정", "연장분 CCB 협의", "승인 후 검증 약 1개월분"],
+      ["2", "E2E 진입 조건", "일본 측 회귀 테스트 준비", "전체 재일정", "E2E #1 투입 시점 결정"],
+      ["3", "외부 환경 해소", "HU · VDP · CTI 일정 확정", "대기와 별도 범위로 구분", "해소 후 시험분만 투입"],
+      ["4", "범위 변경", "TC 문서 기준 신규 · 재수행 확정", "근거 기준 별도 협의", "신규 TC · 재수행분"],
+      ["5", "자료 기준", "11/16 Fail 결과 · E2E 자료 정리", "통합 논의로 이월", "—"],
+    ] },
 };
 
 module.exports = {
   meta: {
-    title: "GSP DVT 결과 보드",
-    owner: "LG U+",
+    title: "DVT 및 E2E 운영방안 논의",
     project: "Global South · e-Care",
     date: "2026.11.14",
-    asof: "Confluence 11/12 · GSP DB 11/11 기준",
-    modes: { plan: "현행 계획", planSub: "11/17 종료", changed: "제안", changedSub: "연장 · 분리" },
+    asof: "11/14 논의 · Confluence 11/12 · GSP DB 11/11 기준",
     changelog: [
+      { v: "v2.0", at: "2026.11.14", items: [
+        "문서를 ‘DVT 및 E2E 운영방안 논의’로 확장 — 메인 3장(현황과 쟁점 · 제안 · 실행과 공수 전제) + Timeline + Appendix 구조로 재구성",
+        "근거는 메인 장표에서 오른쪽 서랍으로 열리고, 서랍의 [부록에서 자세히] 버튼으로 해당 Appendix 페이지로 이동",
+        "기종결 · 11/15 종결 예정인 LG U+ 조치 항목(단말 개통 · uCube · 케이블 · 보안정책 등) 삭제",
+        "11/14 DVT · E2E 논의(회의록 · 화이트보드)를 반영: 조건부 승인안, 대안 비교, 공수 협의 전제, E2E 병행 트랙",
+        "이전 화면 편집 내용(edits.json)은 페이지 구조가 바뀌어 적용되지 않음",
+      ] },
       { v: "v1.3", at: "2026.11.14", items: [
         "화면 편집: 글자 서식 추가 — 굵게 · 기울임 · 밑줄 · 취소선(편집 중 선택한 글자, 또는 블록 · 글상자 전체), 글자 크기 조절(A− / A+)",
       ] },
@@ -188,33 +310,18 @@ module.exports = {
       ] },
       { v: "v1", at: "2026.11.14", items: [
         "1 · 2 · 3차 DVT 결과(Confluence)와 PM 정례 10/07 ~ 11/11, E2E 사전준비, GSP DB 이슈트래킹을 한 보드로 정리",
-        "NT 원인을 원인 제공 조직(TMC · TMKR 측 협력사 · LG U+ · Dasan)별로 분류",
+        "NT 원인을 원인 제공 조직(TMC · TMKR 측 협력사 · Dasan)별로 분류",
         "3차 결과는 11/12 누적까지 반영. 11/13 HU 업데이트 · VDP Diag 1차 결과는 미게시라 미반영",
       ] },
     ],
   },
-  src, rounds, daily, ntWhy, remain, schedule,
-  summary: {
-    kicker: "DVT 1 · 2 · 3차 종합 · 2026.11.12 누적",
-    headline: "DVT 종료(11/17)를 앞둔 11/12 기준, 3차 80 TC 중 Pass는 18건. NT는 결함이 아니라 ‘시험 진입 불가’이고, 원인은 외부 연동과 시험 환경에 있다",
-    ask: "그래서 DVT는 11/17에 닫지 말고, 선행조건이 풀리는 일정에 맞춰 연장 · 분리해야 한다",
-    steps: [
-      { n: 1, tag: "사실", title: "NT가 줄지 않았다", body: "1차 NT 144(50%), 2차 NT 323(38%), 3차 11/12 기준 NT 33 + 미수행 24. 2차 NT의 73%가 CCW 236 TC", link: "차수별 결과 보기", go: "rounds" },
-      { n: 2, tag: "원인", title: "NT는 ‘진입 불가’ — 외부 연동 · 환경 때문", body: "10/07 PM 합의: NT는 진입 자체가 불가한 항목. CTI(TCK), VDP · HU · GSA(TMC), 개통 · uCube(LG U+)가 막고 있음", link: "원인 분석 보기", go: "why" },
-      { n: 3, tag: "결론", title: "막던 조건이 11/17까지 다 풀리지 않는다", body: "HU 업데이트 11/13 → 이후 재수행 필요, VDP Diag 2차 11/16 ~ 20, CTI 12월. 11/17 종료는 시험하지 못한 TC를 E2E로 넘기는 것", link: "일정 · 제안 보기", go: "plan" },
-    ],
-    status: [
-      { k: "11/03 PM 합의", v: "Kensho E2E 진입 시점에는 사전에 알고 있는 제약사항으로 N/T가 발생하지 않도록 세부 일정을 재구성", panel: "src:pm1103", link: "회의록 근거" },
-      { k: "11/11 PM 합의", v: "E2E는 토요타 공식 검증 Event. Test Case 등 공식 문서를 기준으로 판단하고 구두 설명만으로 이슈를 종료하지 않음", panel: "src:pm1111", link: "회의록 근거" },
-      { k: "11/11 TMKR 의견 (합의 아님)", v: "DVT 지연에 따른 대기 · 유지 공수는 추가비용 인정 어려움. 단, DVT Scope가 늘어 실제 추가 Test가 발생하면 근거 기준으로 별도 검토 가능", facts: [["24", "VDP Diag 3차 신규 TC"], ["5 → 24", "DMS API 변경"], ["NT", "MM 업데이트 후 재수행"]], panel: "src:pm1111", link: "연장 요청이 ‘대기’가 아닌 근거" },
-    ],
-  },
+  src, rounds, daily, ntWhy, remain, deck, apxNew,
   appendix: {
     a1: { id: "apx-r1", code: "A1", title: "1차 DVT 일별 결과 (GS 290 TC)", message: "1차는 GS만 시험. 10/07 Fail 207건은 Block 분류 폐지(10/07 PM) 이후 재판정되어 10/13 Fail 14 · NT 157로 바뀌었다.", source: "r1" },
-    a2: { id: "apx-r2", code: "A2", title: "2차 DVT 일별 · 영역별 결과 (854 TC)", message: "누적 NT는 362 → 288(ADF 조건 변경) 이후 300 안팎에서 멈췄다. 남은 NT 323건 중 236건이 콜센터 웹이다.", source: "r2" },
+    a2: { id: "apx-r2", code: "A2", title: "2차 DVT 일별 · 영역별 결과 (854 TC)", message: "누적 NT는 362 → 288(선행조건 변경) 이후 300 안팎에서 멈췄다. 남은 NT 323건 중 236건이 콜센터 웹이다.", source: "r2" },
     a3: { id: "apx-r3", code: "A3", title: "3차 DVT 진행 (80 TC, 11/12 누적)", message: "2차 Fail과 Fail에 따른 NT만 다시 시험한다. VDP Diag 24건은 아직 한 건도 수행하지 못했다.", source: "r3" },
     a4: { id: "apx-cause", code: "A4", title: "차단 요인 상세 (원인 제공 · 영향 · 해소 예정)", message: "원인 제공 조직은 회의록 · 사전준비표 · GSP DB 기록에서 읽은 것이며, 귀책 판정이 아니라 다음 행동을 정하기 위한 분류다.", source: "db" },
-    a5: { id: "apx-pre", code: "A5", title: "E2E 사전준비 체크리스트 (11/11)", message: "21개 체크 항목 중 ‘준비완료’는 6건. 나머지 15건은 진행중 · 외부일정대기 · 확인필요다.", source: "pre",
+    a5: { id: "apx-pre", code: "A5", title: "E2E 사전준비 체크리스트 (11/11)", message: "20개 체크 항목 중 ‘준비완료’는 6건. 나머지 14건은 진행중 · 외부일정대기 · 확인필요다.", source: "pre",
       head: ["No", "대분류", "체크 항목", "현재 상태", "영향도", "PIC", "비고"],
       rows: [
         ["1", "환경구성", "SU#2 E2E 대응 기자재 1식", "준비완료", "H", "TMKR", "DCM · HU 연결, 통신개통(…8394)"],
@@ -227,7 +334,6 @@ module.exports = {
         ["8", "IF연결", "TSC-DK 서버정보 · 연결", "외부일정대기", "L", "TMC", "12월"],
         ["9", "IF연결", "DMS 구축 · DVT 완료", "진행중", "H", "TMKR", "API 5 → 24개, 시나리오 업데이트 필요"],
         ["10", "IF연결", "e-Care 전용 CTI 연결", "외부일정대기", "H", "TMKR", "마감일 ???"],
-        ["11", "IF연결", "U-Cube API 정상 처리(SU#2)", "진행중", "H", "LGU+", ""],
         ["12", "IF연결", "NAVER API 대체 서비스", "진행중", "M", "TMKR", "별도 키 · 구조 변경"],
         ["13", "IF연결", "일본 URL 확인회 종료", "확인필요", "H", "TMC", "Wi-Fi APN"],
         ["14", "App", "GSA 신규 버전 확보 · 설치", "외부일정대기", "H", "TMC", "10월 말 제공 예정이었음"],
@@ -248,7 +354,7 @@ module.exports = {
         ["9/22", "1차 10/6 ~ 10/13 GS만, 2차 10/26 ~ 11/6 GS + e-Care", "Teams U+D"],
         ["10/01", "DVT 종료 11/30 → 11/17로 2주 단축안", "Teams U+D"],
         ["10/07", "2차 시작 10/21 확정. Block 폐지, NT = 진입 불가로 한정, Fail에 원인 주체(TMC/한국/일본) 컬럼 추가", "(10/07) PM 정례"],
-        ["10/21", "2차: GS는 ADF 정상화 후, e-Care는 VDP · CTI · DMS 제약으로 가능 범위만. CCW는 CTI 미연동 사유로 NT", "(10/21) PM 정례"],
+        ["10/21", "2차: GS는 선행조건 정상화 후, e-Care는 VDP · CTI · DMS 제약으로 가능 범위만. CCW는 CTI 미연동 사유로 NT", "(10/21) PM 정례"],
         ["11/03", "3차 11/11부터, 11/20 전후 DVT 종료 · Kensho 전환 준비", "(11/03) PM 정례"],
         ["11/11", "3차 착수 80 TC. MM Update 후 기존 NT · VDP · GSA/DeepLink 중점", "3차 결과 · (11/11) PM"],
       ] },
@@ -269,7 +375,7 @@ module.exports = {
         ["2차", "20261029_GS_DVT_SystemTestCase_v1.4.xlsx", "10/29", "유창성"],
         ["2차", "20261029_eCare_DVT_SystemTestCase_v1.3.xlsx", "10/29", "유창성"],
         ["2차", "20261030_GS_DVT_SystemTestCase_v1.4.xlsx", "10/30", "유창성"],
-        ["3차", "첨부 없음 — SASE 보안정책으로 업로드 실패(ISS-037)", "11/11", "-"],
+        ["3차", "첨부 없음", "11/11", "-"],
       ],
       tcHist: [
         ["v1.0", "08/24", "초안"],
@@ -278,21 +384,5 @@ module.exports = {
         ["v1.3", "09/22", "e-Care 상담 이력 응대 중 오류 대응 변경"],
         ["v1.4 (GS)", "10/22 ~ 10/30", "2차 DVT 시험 기록본"],
       ] },
-  },
-  plan: {
-    title: "11/17에 닫으면 시험하지 못한 TC가 그대로 E2E로 넘어간다",
-    lede: "선행조건이 풀리는 날짜 기준으로 DVT를 연장 · 분리하는 안. 위 전환으로 현행 계획과 제안을 비교한다. 제안은 아직 합의된 일정이 아니다.",
-    steps: [
-      { n: 1, title: "3차를 11/20까지", body: "VDP Diag 2차(11/16 ~ 20) 종료일에 맞춰 GS · DMS · VDP 잔여 시험", panel: "sched:dvt" },
-      { n: 2, title: "MM 업데이트 후 재수행", body: "11/13 HU 업데이트 결과로 요금제 · Provisioning NT를 3차 안에서 재시험", panel: "sched:rerun" },
-      { n: 3, title: "11/23은 ‘E2E 사전 테스트’", body: "남은 NT가 풀리기 전엔 공식 E2E가 아닌 사전 테스트로 명명(11/06 박준현 제안)", panel: "sched:e2e" },
-      { n: 4, title: "CCW 236은 별도 DVT", body: "CTI 완료 즉시 콜센터 웹 DVT 후 e-Care E2E(12/14) 진입", panel: "sched:ccw" },
-    ],
-    sched: {
-      dvt: { kicker: "제안 1", title: "DVT 3차를 VDP Diag 2차 종료일(11/20)까지", body: ["3차 결과 페이지 일정 칸은 11/17 ~ 11/19가 TBD로 비어 있고, VDP Diag 2차 시험은 11/16 ~ 11/20 계획(Teams E2E 실무방 11/04 박용희)", "11/03 PM도 ‘11/20 전후 DVT 종료 · Kensho 전환 준비’로 기록 — 11/17 종료(E2E 세부일정)와 출처끼리 날짜가 다름", "VDP Diag 24건은 3차에 처음 편성된 신규 TC. TMKR 11/11 의견의 ‘Scope 증가에 따른 실제 추가 Test’에 해당"], src: ["r3", "pm1103", "pm1111"] },
-      rerun: { kicker: "제안 2", title: "HU · MM 업데이트 직후 기존 NT 재수행", body: ["11/11 PM 합의: DVT 3차에서 MM Update 이후 기존 N/T였던 요금제 · Provisioning 항목 재검증", "업데이트는 11/13(금) 13:30 ~ 16:30 TMC 원격 회의 중 실시 예정. HU-PC 케이블 확보가 전제(ISS-038)", "3차 결과표 80 TC에는 이 재수행 건수가 따로 없음 → 재수행 TC 수를 결과표에 추가해야 함"], src: ["pm1111", "db"] },
-      e2e: { kicker: "제안 3", title: "11/23 시작분은 ‘E2E 사전 테스트’로 구분", body: ["E2E 세부일정(11/03): 24SU#2 LifeCycle 11/23 ~ 11/30 (508 TC), 중점평가 · Ecall 12/01 ~ 12/11 (161 TC), e-Care 12/14 ~ 12/30 (212 TC)", "박용희(11/05): 현재 상태로는 11/23 전체 E2E 시나리오를 정상 수행하기 어려울 가능성이 높음", "박준현(11/06): 공식 E2E가 아닌 시험에 E2E를 쓰면 일본에 혼선 → ‘11/23 E2E 사전 테스트’로 구분"], src: ["sch", "db"] },
-      ccw: { kicker: "제안 4", title: "CCW 236 TC는 CTI 완료 즉시 별도 DVT", body: ["CCW는 1 · 2 · 3차 어디에서도 한 건도 시험되지 않았고, 3차 범위에도 없음", "현행 일정대로면 e-Care E2E(12/14 ~ 12/30) 기간에 처음 시험하게 됨 — 11/03 PM 합의(알려진 제약으로 E2E에서 NT 발생 금지)와 충돌", "10/28 PM: CTI 없이 선행 가능한 e-Care 시나리오(B/C 등)를 분리해 전진 배치 검토 — 같은 원칙을 DVT에 적용", "CTI 완료일이 확정되지 않아 제안 막대의 시점은 CTI 완료일에 따라 움직임"], src: ["r2", "pm1103", "pm1028"] },
-    },
   },
 };
