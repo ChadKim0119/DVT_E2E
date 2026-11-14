@@ -213,3 +213,6 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .tl-b.sh { overflow: visible; } .tl-b.sh span { overflow: visible; position: absolute; left: 100%; margin-left: 8px; color: var(--ink); }
 .scope .more, .nxt .more { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--accent-deep); text-decoration: underline; cursor: pointer; }
 .scqa .tag + h3 { margin-top: 0; } .scqa p { font-size: 14.5px; line-height: 1.6; }
+.word { margin-top: 14px; font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 10px; }
+.tl-m.dead b { background: var(--accent-deep); } .tl-m.dead i { border-left: 2px solid var(--accent-deep); }
+.tl-m { z-index: 2; }

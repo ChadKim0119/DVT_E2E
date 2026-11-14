@@ -721,6 +721,9 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .tl-b.sh { overflow: visible; } .tl-b.sh span { overflow: visible; position: absolute; left: 100%; margin-left: 8px; color: var(--ink); }
 .scope .more, .nxt .more { background: none; border: 0; padding: 0; font: inherit; font-weight: 600; color: var(--accent-deep); text-decoration: underline; cursor: pointer; }
 .scqa .tag + h3 { margin-top: 0; } .scqa p { font-size: 14.5px; line-height: 1.6; }
+.word { margin-top: 14px; font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 10px; }
+.tl-m.dead b { background: var(--accent-deep); } .tl-m.dead i { border-left: 2px solid var(--accent-deep); }
+.tl-m { z-index: 2; }
 </style>
 </head>
 <body data-mode="changed">
@@ -781,7 +784,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       '<div class="cols2 opt-wrap"><div><div class="scroll"><table class="tbl opt"><thead><tr>' + s.optHead.map(function (h, i) { return '<th' + (i === 2 ? ' class="rec"' : "") + '>' + (i > 0 ? '<button type="button" class="thb" data-panel="' + s.optEv[i - 1] + '">' + esc(h) + '</button>' : "") + '</th>'; }).join("") + '</tr></thead><tbody>' +
       s.optRows.map(function (r) { return '<tr>' + r.map(function (c, i) { return (i === 0 ? '<th class="rh">' : '<td' + (i === 2 ? ' class="rec"' : "") + '>') + esc(c) + (i === 0 ? '</th>' : '</td>'); }).join("") + '</tr>'; }).join("") + '</tbody></table></div></div>' +
       '<div class="scope"><h3>' + esc(s.scopeTitle) + '</h3><div class="sc in"><b>승인 대상</b>' + s.scopeIn.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join("") + '</div><div class="sc out"><b>분리</b>' + s.scopeOut.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join("") + '</div><div class="sc open"><b>확정 필요</b>' + s.scopeOpen.map(function (t) { return '<span>' + esc(t) + '</span>'; }).join("") + '</div>' + goBtn("ev:optB", "범위 근거 보기") + '</div></div>' +
-      '<p class="askbar">' + esc(s.decide) + '</p></section>';
+      '<p class="word">' + esc(s.word) + '</p><p class="askbar">' + esc(s.decide) + '</p></section>';
   }
   function vS3() {
     var s = DK.s3;
@@ -795,7 +798,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   function vTL() {
     var t = DK.tl, N2 = t.days, pc = function (d) { return (dayN(d) / N2 * 100).toFixed(3) + "%"; };
     var weeks = []; for (var w = 0; w < N2; w += 7) { var dd = new Date(Date.UTC(t.start[0], t.start[1] - 1, t.start[2] + w)); weeks.push('<span style="left:' + (w / N2 * 100).toFixed(2) + '%">' + (dd.getUTCMonth() + 1) + '/' + dd.getUTCDate() + '</span>'); }
-    var marks = t.marks.map(function (m, mi) { return '<button type="button" class="tl-m' + (mi % 2 ? " lo" : "") + '" style="left:' + pc(m.d) + '" data-panel="' + m.ev + '"><i></i><b>' + esc(m.l) + '</b></button>'; }).join("");
+    var marks = t.marks.map(function (m, mi) { return '<button type="button" class="tl-m' + (mi % 2 ? " lo" : "") + (m.dead ? " dead" : "") + '" style="left:' + pc(m.d) + '" data-panel="' + m.ev + '"><i></i><b>' + esc(m.l) + '</b></button>'; }).join("");
     var lanes = t.lanes.map(function (ln) {
       return '<div class="tl-row"><div class="tl-lab"><b>' + esc(ln.h) + '</b><small>' + esc(ln.sub) + '</small></div><div class="tl-tr">' + ln.bars.map(function (b, i) {
         var l = dayN(b.a), w = Math.max(dayN(b.b) - l, .8);
@@ -826,11 +829,12 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     var a = A.a7;
     return '<h4>DVT 결과 페이지 첨부</h4>' + table(["차수", "파일", "올린 날", "올린 사람"], a.files, { nowrap: [0, 2, 3] }) +
       '<h4>System Test Case 문서 버전</h4>' + table(["버전", "일자", "변경 내용"], a.tcHist, { nowrap: [0, 1] }) +
-      '<h4>이 보드가 참조한 문서</h4><ul class="plain">' + Object.keys(SRC).map(function (k) { var s = SRC[k]; return '<li>' + (s.u ? '<a href="' + s.u + '" target="_blank" rel="noopener">' + esc(s.t) + '</a>' : esc(s.t) + ' (프로젝트 DB 문서)') + '</li>'; }).join("") + '</ul>';
+      '<h4>이 보드가 참조한 문서</h4><ul class="plain">' + Object.keys(SRC).map(function (k) { var s = SRC[k]; return '<li>' + (s.u ? '<a href="' + s.u + '" target="_blank" rel="noopener">' + esc(s.t) + '</a>' : esc(s.t) + ' (' + (s.n || "프로젝트 DB 문서") + ')') + '</li>'; }).join("") + '</ul>';
   }
+  function apxLabel(id) { var x = APX.filter(function (p) { return p[0].id === id; })[0]; return x ? x[0].code + " · " + x[0].title : id; }
   function bNew(o) { return function () { return table(o.head, o.rows, { nowrap: [0] }); }; }
   var N4 = D.apxNew;
-  var APX = [[N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
+  var APX = [[N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
   APX.forEach(function (x, i) { x[0].code = "A" + (i + 1); });
   function vAppendix() {
     return '<section class="sheet apx-head" id="appendix"><span class="sheet-no"><span class="pill">Appendix</span>목차</span><h2>Appendix · 근거 자료</h2><p class="lede">메인 장표의 숫자와 원인 분류가 나온 원본 기록. ' + esc(D.meta.asof) + '.</p>' +
@@ -859,7 +863,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     }
     if (k[0] === "ev") {
       var e = EV[k[1]]; if (!e) return null;
-      return { kicker: e.kicker, title: e.title, html: '<ul class="fl">' + e.facts.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' + (e.src ? srcLinks(e.src) : "") + '<a class="golink" href="#' + e.apx + '">부록에서 자세히 보기 <small>' + esc(e.apxLabel) + '</small><span aria-hidden="true">→</span></a>' };
+      return { kicker: e.kicker, title: e.title, html: '<ul class="fl">' + e.facts.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' + (e.src ? srcLinks(e.src) : "") + '<a class="golink" href="#' + e.apx + '">부록에서 자세히 보기 <small>' + esc(apxLabel(e.apx)) + '</small><span aria-hidden="true">→</span></a>' };
     }
     if (k[0] === "src") {
       var x = SRC[k[1]]; if (!x) return null;
