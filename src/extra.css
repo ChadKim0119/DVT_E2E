@@ -219,3 +219,5 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 
 /* 화면 편집: 줄바꿈 · 블록 이동 */
 #app .ed-flex { display: block !important; }
+.ed-ui .c-w { display: none; }
+.ed-ui[data-sel="el"] .c-w, .ed-ui[data-edit="1"] .c-w { display: inline-block; } /* 블록 선택 또는 글자 편집 중에 폭 · 한 줄 버튼 표시 */
