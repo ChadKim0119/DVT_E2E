@@ -7,8 +7,8 @@
     var on = false, tool = "sel", sel = null, selShape = 0, editing = null, pre = "", drag = null, hov = null, stale = 0, nid = 1;
     var oH = new Map(), oT = new Map(), oS = new Map(), oM = new Map(), brPending = false;
     var COLOR = /^(#[0-9a-fA-F]{3,8}|none|transparent)$/, KINDS = { rect: 1, ellipse: 1, line: 1, arrow: 1, text: 1 };
-    var SP = { bg: "background", fg: "color", fw: "fontWeight", fi: "fontStyle", td: "textDecoration", fs: "fontSize" }; /* 저장 키 → CSS */
-    var SV = { bg: COLOR, fg: COLOR, fw: /^(400|700)$/, fi: /^(italic|normal)$/, td: /^(none|underline|line-through|underline line-through)$/, fs: /^\d{1,3}(\.\d)?px$/ };
+    var SP = { bg: "background", fg: "color", fw: "fontWeight", fi: "fontStyle", td: "textDecoration", fs: "fontSize", mw: "maxWidth", tw: "textWrap" }; /* 저장 키 → CSS */
+    var SV = { bg: COLOR, fg: COLOR, fw: /^(400|700)$/, fi: /^(italic|normal)$/, td: /^(none|underline|line-through|underline line-through)$/, fs: /^\d{1,3}(\.\d)?px$/, mw: /^(none|\d{2,4}px)$/, tw: /^(wrap|nowrap)$/ };
     var styleOf = function (el) { var o = {}; Object.keys(SP).forEach(function (k) { o[k] = el.style[SP[k]]; }); return o; };
     var Q = function (s, r) { return (r || document).querySelector(s); };
     var kids = function (el) { return Array.prototype.filter.call(el.children, function (c) { return !c.classList.contains("ed-layer"); }); };
@@ -158,6 +158,22 @@
       var t = tgt(); if (!t.s && !t.el) return; if (t.s) stopEdit();
       var cur = t.s ? parseFloat(t.s.fs || 14) : parseFloat(getComputedStyle(t.el).fontSize);
       snapped = false; paint("fs", Math.max(8, Math.min(120, Math.round(cur + d))) + "px"); snapped = false;
+    }
+    function width(d) { /* 블록 최대 폭: 넓게(+) · 좁게(−) · 최대(0). 오른쪽이 비어 있는데 두 줄로 꺾이는 제목 · 설명을 한 줄로 */
+      var t = tgt(); if (!t.el || t.s) return msg("먼저 폭을 바꿀 블록을 클릭해 선택하세요.", 1);
+      var el = t.el, room = el.parentElement.clientWidth, cur = el.offsetWidth, v;
+      if (d === 1) return oneLine(el);
+      if (!d) v = "none";
+      else { var n = Math.round(cur + d); v = n >= room ? "none" : Math.max(120, n) + "px"; if (d < 0 && getComputedStyle(el).display === "inline") return msg("글자 조각 대신 블록(↑ 상위)을 선택하세요.", 1); }
+      snapped = false; paint("mw", v); if (!d) paint("tw", "wrap"); /* 제목은 줄 길이를 고르게 나누는 설정이라 폭을 넓혀도 오른쪽이 빔 → 왼쪽부터 꽉 채우게 */ snapped = false; fit();
+      msg("폭 " + (v === "none" ? "최대" : v) + " · 두 줄이 그대로면 ↑ 상위로 바깥 블록도 넓혀 보세요.");
+    }
+    function oneLine(el) { /* 줄바꿈 없이 한 줄로 · 넘치면 글자를 한 칸씩 줄여 들어가게 */
+      var room = el.parentElement.clientWidth, fs = parseFloat(getComputedStyle(el).fontSize), n = 0;
+      snapped = false; paint("mw", "none"); paint("tw", "nowrap");
+      while (el.scrollWidth > room && fs > 12 && n++ < 60) { fs -= 0.5; paint("fs", fs + "px"); }
+      snapped = false; fit();
+      msg(el.scrollWidth > room ? "12px 까지 줄여도 넘칩니다 — 문장을 줄이거나 [서식 초기화]로 되돌리세요." : "한 줄로 맞췄습니다" + (n ? " (글자 " + fs + "px)" : "") + ".", el.scrollWidth > room);
     }
 
     /* ── 글자 편집 ── */
@@ -361,19 +377,20 @@
     ui.innerHTML = '<div class="ed-row"><button type="button" data-t="sel" class="on" title="선택 · 더블클릭으로 글자 수정">선택</button><button type="button" data-t="rect">▭ 사각형</button><button type="button" data-t="ellipse">◯ 원</button><button type="button" data-t="line">╱ 선</button><button type="button" data-t="arrow">→ 화살표</button><button type="button" data-t="text">T 글상자</button>' +
       '<span class="sp"></span><label class="c-bg">배경 <input type="color" id="ed-bg"></label><button type="button" id="ed-nobg" class="c-bg" title="배경 없음(투명)">없음</button><label class="c-fg">글자 <input type="color" id="ed-fg"></label><label class="c-st">선 <input type="color" id="ed-st"></label>' +
       '<span class="sp c-fm"></span><span class="c-fm ed-fm"><button type="button" data-f="bold" title="굵게 (Ctrl+B)"><b>B</b></button><button type="button" data-f="italic" title="기울임 (Ctrl+I)"><i>I</i></button><button type="button" data-f="underline" title="밑줄 (Ctrl+U)"><u>U</u></button><button type="button" data-f="strike" title="취소선"><s>S</s></button><button type="button" data-z="-2" title="글자 작게 (블록·글상자 전체)">A−</button><button type="button" data-z="2" title="글자 크게 (블록·글상자 전체)">A+</button></span>' +
-      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-mu" class="c-el" title="선택한 블록을 한 칸 위로 (Alt+↑)">▲ 위로</button><button type="button" id="ed-md" class="c-el" title="선택한 블록을 한 칸 아래로 (Alt+↓)">▼ 아래로</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 서식(색·굵기·크기) 수정을 취소">서식 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo" title="되돌리기 (Ctrl/⌘+Z)" aria-label="되돌리기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>' +
+      '<span class="sp"></span><button type="button" id="ed-up" class="c-el" title="바로 위 요소(블록)를 선택">↑ 상위</button><button type="button" id="ed-mu" class="c-el" title="선택한 블록을 한 칸 위로 (Alt+↑)">▲ 위로</button><button type="button" id="ed-md" class="c-el" title="선택한 블록을 한 칸 아래로 (Alt+↓)">▼ 아래로</button><button type="button" data-w="-80" class="c-el" title="블록 폭 좁게">⇥⇤ 좁게</button><button type="button" data-w="80" class="c-el" title="블록 폭 넓게 (오른쪽 여백까지)">⇤⇥ 넓게</button><button type="button" data-w="0" class="c-el" title="블록 폭 최대 + 오른쪽까지 글자를 채움 — 줄 수를 줄임">폭 최대</button><button type="button" data-w="1" class="c-el" title="줄바꿈 없이 한 줄로 (넘치면 글자를 자동으로 줄임)">한 줄로</button><button type="button" id="ed-rs" class="c-el" title="이 요소의 서식(색·굵기·크기·폭) 수정을 취소">서식 초기화</button><button type="button" id="ed-del" class="c-sh">삭제</button><button type="button" id="ed-undo" title="되돌리기 (Ctrl/⌘+Z)" aria-label="되돌리기"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>' +
       '<span class="sp"></span><button type="button" id="ed-save" class="pri">저장 (git)</button><button type="button" id="ed-tok" title="GitHub 토큰 입력/삭제">토큰</button></div><div class="ed-msg" id="ed-msg" role="status"></div>';
     document.body.appendChild(ui);
     var tg = document.createElement("button");
     tg.type = "button"; tg.id = "ed-toggle"; tg.className = "pg-back"; tg.setAttribute("aria-pressed", "false"); tg.title = "화면 편집 (글자 · 도형 · 색상)"; tg.textContent = "✎ 편집";
     $("fs").parentNode.insertBefore(tg, $("fs"));
     tg.addEventListener("click", function () { setOn(!on); });
-    ui.addEventListener("mousedown", function (ev) { if (ev.target.closest("[data-f],[data-z]")) ev.preventDefault(); }); /* 서식 버튼은 글자 선택·편집 상태를 유지 */
+    ui.addEventListener("mousedown", function (ev) { if (ev.target.closest("[data-f],[data-z],[data-w]")) ev.preventDefault(); }); /* 서식 버튼은 글자 선택·편집 상태를 유지 */
     ui.addEventListener("click", function (ev) {
       var b = ev.target.closest("button"); if (!b) return;
       if (b.hasAttribute("data-t")) { stopEdit(); deselect(); setTool(b.getAttribute("data-t")); }
       else if (b.hasAttribute("data-f")) fmt(b.getAttribute("data-f"));
       else if (b.hasAttribute("data-z")) size(+b.getAttribute("data-z"));
+      else if (b.hasAttribute("data-w")) width(+b.getAttribute("data-w"));
       else if (b.id === "ed-save") save();
       else if (b.id === "ed-tok") { askToken(); msg(token() ? "토큰을 저장했습니다." : "토큰을 삭제했습니다."); }
       else if (b.id === "ed-undo") undo();
