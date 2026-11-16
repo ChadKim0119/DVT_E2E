@@ -216,3 +216,6 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .word { margin-top: 14px; font-size: 13.5px; color: var(--ink-2); border-top: 1px dashed var(--line); padding-top: 10px; }
 .tl-m.dead b { background: var(--accent-deep); } .tl-m.dead i { border-left: 2px solid var(--accent-deep); }
 .tl-m { z-index: 2; }
+
+/* 화면 편집: 줄바꿈 · 블록 이동 */
+#app .ed-flex { display: block !important; }
