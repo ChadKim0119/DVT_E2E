@@ -144,8 +144,8 @@
   /* ── mount ── */
   $("chg").innerHTML = '변경 이력 <b>' + esc(D.meta.changelog[0].v) + '</b>'; $("chg").setAttribute("aria-label", "이 보드의 변경 이력, 현재 " + D.meta.changelog[0].v);
   $("brand").innerHTML = esc(D.meta.title) + ' <span>· ' + esc(D.meta.project) + ' · ' + esc(D.meta.date) + '</span>';
-  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["manpower", "추가 인력"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
-  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vMan() + vTL() + vAppendix();
+  $("nav").innerHTML = [["situation", "메인"], ["blocking", "블로킹 이슈"], ["manpower", "추가 인력"], ["options", "제안"], ["plan", "실행 · 공수 전제"], ["ccb", "CCB 검토"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
+  $("app").innerHTML = vS1() + vBlk() + vMan() + vS2() + vS3() + vS4() + vTL() + vAppendix();
   function setMode(m) {
     if (sumEl) clearSum();
     document.body.setAttribute("data-mode", m);

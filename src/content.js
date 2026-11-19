@@ -138,24 +138,24 @@ const remain = {
 // ── 3장 본문 + 근거(드로어) + Timeline — 2026-11-14 DVT·E2E 논의 + Copilot 핸드오프 패키지 기준 ──
 const deck = {
   s1: {
-    kicker: "1 / 3 · 현황과 쟁점",
-    title: "DVT 3차는 11/16 공식 종료 시점에도 VDP 연계 24 TC 중 2건 성공에 그치고, HU 업데이트는 9단계 성공 확인에서 멈춰 있다. 주요 Blocking Issue는 12/30까지 풀려야 한다",
-    lede: "DVT 완료 기준은 Fail · NT가 없는 상태(Pass)다. 남은 건은 TMC · 외부 연동 환경이 열려야 시험할 수 있어, 당사 개발 범위의 검증과 분리해서 판단할 필요가 있다.",
+    kicker: "메인 · 핵심 메시지",
+    title: "DVT는 NT와 Critical Blocker가 많아 종료가 어려운데, TMKR은 Kensho E2E를 11/23에 강행하려 한다. 개발이 지금도 계속되고 있어 내년 1월까지 추가 인력 25 MM이 필요하다",
+    lede: "11/17 기준 DVT 통합 968 TC 중 NT 352건(36%)이 남았고, 3차 최종 NT는 39건이다. 잔여 Critical Blocker 5건은 모두 TMC · TMKR 측 선행 조건이 풀려야 시험할 수 있다.",
     kpis: [
-      { k: "ev:status", small: "3차 DVT · 80 TC (최종)", v: "39", em: "/ 80 NT", d: "최종 NT 39건 · 11/12 누적 당시 Pass 18 · NT 33" },
-      { k: "ev:vdp", small: "VDP(e-Care) 연계 테스트", v: "2", em: "/ 24 TC 성공", d: "나머지 22건은 연동 환경 대기", hot: true },
-      { k: "ev:hu", small: "HU(MM) 업데이트 · Tier1 ①", v: "9단계", em: "에서 중단", d: "성공 확인 파일 미생성 · 11/16 13시 재개", hot: true },
-      { k: "ev:deadline", small: "마지노선", v: "12/30", em: "", d: "Kensho E2E 회귀 테스트 종료일 · Blocking Issue 해소 기한", hot: true },
+      { k: "ev:status", small: "DVT NT (11/17 · 3차 최종)", v: "352", em: "/ 968 TC", d: "3차 최종 NT 39건 / 80 TC", hot: true },
+      { k: "ev:blk", small: "Critical Blocker (11/17)", v: "5", em: "건", d: "TMC · TMKR 측 선행 조건 미해소", hot: true },
+      { k: "ev:e2e11", small: "Kensho E2E 진입", v: "11/23", em: "", d: "TMKR 강행 입장 · 12/30 회귀 테스트 종료" },
+      { k: "ev:c3", small: "추가 인력 (11/18 ~ 1/29)", v: "25.00", em: "MM", d: "청구 월 10 MM(11월 5) · 대기 · 운영 15명 내외", hot: true },
     ],
     cols: [
-      { tag: "Situation · 사실", head: "DVT 3차는 11/16에 공식 종료되지만 완료 기준에 못 미친다", body: "완료는 Fail · NT가 없는 상태다. NT 비중은 1 · 2 · 3차에 50% → 38% → 59%(수행분)로 줄지 않았고, 3차는 최종 NT가 39건이다.", ev: "ev:complete", more: "완료 기준 · 3차 결과 근거" },
-      { tag: "Complication · 원인", head: "막고 있는 것은 당사 개발 범위 밖의 환경이다", body: "VDP 접속 · 콜백 환경, HU 소프트웨어(SU#1), GSA · Auth0, CTI 개발(12월), DMS 사양 변경. 당사 개발 로직은 내부 검증을 마쳤으나 연동 환경이 없어 시험 완료로 인정받지 못한다. 외부 환경 미비 위험은 9월 일정 협의에서 이미 제기되었다.", ev: "ev:cause", more: "원인 분류 근거" },
-      { tag: "Implication · 영향", head: "현행대로면 DVT가 1 ~ 2월로 밀리고 E2E와 겹친다", body: "E2E는 11/23 진입, 12/30 회귀 테스트 종료로 잡혀 있다. 12/30까지 주요 Blocking Issue가 풀리지 않으면 E2E 지속 여부와 후속 일정을 재협의해야 한다.", ev: "ev:impact", more: "일정 영향 근거" },
+      { tag: "Situation · 사실", head: "DVT는 종료 기준(Fail · NT 0)에 한참 못 미친다", body: "11/17 기준 통합 968 TC 중 NT 352건(GS 59 · e-Care 259 · DMS 34)이 남았고, 3차는 최종 NT 39건이다. VDP Diag는 24 TC 중 2건 완료 · 21건 미수행이다.", ev: "ev:status", more: "NT 근거" },
+      { tag: "Complication · 원인", head: "Critical Blocker 5건을 여러 담당자가 풀고 있지만 쉽지 않다", body: "HU SubMCU 업데이트 5회 후에도 테스트 필요, VDP Diag x-api-key · 필드 조건 이슈, CTI 27CY SU#2 전용 연계환경 필요, DMS는 VDP 실데이터 미수신으로 시뮬레이터 대체 시험, ACOS API 변경 영향 지속.", ev: "ev:blk", more: "블로킹 이슈 근거" },
+      { tag: "Implication · 필요", head: "그런데도 TMKR은 11/23 E2E 진입을 강행하려 한다 → 1월까지 인력이 필요하다", body: "지금도 개발자 월 13 MM(10 · 11월)이 결함 수정 · 연동 대응을 하고 있고, 24DCM 때도 DVT · E2E 기간에 개발팀 평균 22명을 유지했다. DVT 잔여와 E2E가 겹치는 11/18 ~ 1/29에 대기 · 운영 15명 내외, 청구 월 10 MM(합계 25.00 MM)이 필요하다.", ev: "ev:c3", more: "추가 인력 근거" },
     ],
-    ask: "이번 논의에서 정할 것: ① DVT를 어떤 기준으로 정리할지 ② E2E를 어떻게 병행할지 ③ 그에 따른 공수 투입 전제",
+    ask: "TMKR 요청: ① 11/23 E2E 진입 시 DVT 잔여 이슈를 Open Item으로 함께 관리 ② 11/18 ~ 2027.01.29 추가 인력 25.00 MM(월 10 MM, 11월 5 MM) 인정",
   },
   s2: {
-    kicker: "2 / 3 · 제안",
+    kicker: "제안 · DVT · E2E 운영 방식",
     title: "당사 개발 범위는 조건부 승인하되 잔여 항목은 Open Item으로 유지하고, E2E는 조건부로 진입(Conditional Go)하는 안을 제안한다",
     lede: "‘DVT 완료’가 아니라 ‘DVT Open Item 유지 + E2E 조건부 진입’으로 분리해 표기한다. 현행 유지와 전면 재일정은 종료 시점이 불확실하다.",
     optHead: ["", "A. 현행 유지", "B. Open Item 유지 + 조건부 진입 (제안)", "C. 전면 재일정"],
@@ -174,7 +174,7 @@ const deck = {
     decide: "TMKR 결정 요청: 위 범위로 조건부 승인하고, 외부 영역은 Open Item으로 남겨 별도 일정으로 재시험한다. 진입 가부는 9개 Gate(G-01 ~ 09) 충족 여부로 11/20에 서면 판정한다.",
   },
   s3: {
-    kicker: "3 / 3 · 실행과 공수 전제",
+    kicker: "실행과 공수 전제",
     title: "E2E는 회귀 테스트 중심으로 병행 진입하고, 공수는 아래 다섯 가지 전제가 충족되는 범위에서 투입한다. 12/30이 마지노선이다",
     lede: "전제가 하나라도 달라지면 일정과 공수가 함께 달라진다. 이 장표는 공수 협의의 합의 대상이다.",
     premHead: ["#", "전제", "충족 조건", "충족되지 않으면"],
@@ -226,7 +226,7 @@ const deck = {
     notes: ["11/16 ~ 17 일본 측 협의 결과에 따라 E2E #1 병행 또는 전체 재일정", "12/30까지 주요 Blocking Issue 미해소 시 E2E 지속 여부와 후속 일정 재협의", "DVT 기간 변경은 CCB 연계 안건"],
   },
   ev: {
-    status: { kicker: "근거 · 3차 DVT", title: "3차 80 TC 중 최종 NT 39건", facts: ["최종 NT 39건(11/19 수정)", "11/12 누적: Pass 18 · Fail 5 · NT 33 · 미수행 24 (80 TC)", "미수행 24건은 VDP Diag 신규 TC — TMC 연동이 열려야 시작", "수행한 56건 중 33건(59%)이 NT — 2차에서 막혔던 TC가 같은 조건에서 다시 NT", "NT 비중 추이: 1차 50%(144/290), 2차 38%(323/854), 3차 59%(33/56)"], src: ["r1", "r2", "r3"], apx: "apx-r3" },
+    status: { kicker: "근거 · DVT NT", title: "통합 968 TC 중 NT 352건 · 3차 최종 NT 39건", facts: ["11/17 기준 DVT 1 · 2 · 3차 통합 968 TC: GS 326(NT 59) · e-Care 528(NT 259) · DMS 114(NT 34), NT 합계 352건(36%) — CCB 11/18 자료 13p", "e-Care NT 259건 중 CCW 236건은 CTI 내선번호 · CAN Configuration 미확보", "3차 최종 NT 39건(11/19 수정)", "11/12 누적: Pass 18 · Fail 5 · NT 33 · 미수행 24 (80 TC)", "미수행 24건은 VDP Diag 신규 TC — TMC 연동이 열려야 시작", "수행한 56건 중 33건(59%)이 NT — 2차에서 막혔던 TC가 같은 조건에서 다시 NT", "NT 비중 추이: 1차 50%(144/290), 2차 38%(323/854), 3차 59%(33/56)"], src: ["r1", "r2", "r3"], apx: "apx-r3" },
     complete: { kicker: "근거 · 완료 기준", title: "Fail · NT가 없어야 Pass", facts: ["11/14 논의: DVT 완료는 Fail · NT가 없는 상태", "10/07 PM 합의: NT는 진입 자체가 불가한 항목, 진입 후 실패는 Fail", "일반 품질 Gate 원칙: 단순 기간 종료가 아니라 사전 정의된 기준과 증적을 충족해야 다음 단계로 이행(CTO DVT Gating 준거 — 본 프로젝트 직접 적용 기준은 아님)"], src: ["pm1007", "cto"], apx: "apx-mtg" },
     vdp: { kicker: "근거 · VDP", title: "VDP(e-Care) 연계 테스트 24 TC 중 2건 성공", facts: ["11/13 이준제 보고: 24 TC 중 2건 성공, 3번째 TC는 성공 여부를 TMC에 문의 중. 11/16(월) 10시 재개", "11/13 MS 장애로 다산 메일 수 · 발신 불가 → 메일로 받는 VPN 비밀번호를 받지 못해 이준제 VPN 1개로만 진행 — VDP Diag와 DMS 기준 정보 시험을 동시에 할 수 없었음", "VDP 접속정보 지연 · 오류, 콜백(CoCo Callback) 미수신으로 DTC 수집 후속 처리 미검증", "일본 측 VDP 서버 정보는 10/05 제공 예정이었음(9/15 일정 협의 메일). 외부 환경 준비 전 착수 시 미시험 증가 · 결과 유효성 저하 가능성을 사전 제기", "VDP Diag 2차 11/16 ~ 20 예정"], src: ["tm1113", "pm1028", "mail0915", "pmr", "db"], apx: "apx-cause" },
     hu: { kicker: "근거 · HU", title: "HU(MM) 업데이트 — Tier1 업데이트 ①의 9단계(성공 여부 확인)에서 중단", facts: ["11/13 이준제 보고: 업데이트 절차 ④ Tier1 업데이트 ① → 9단계 ‘성공 여부 확인’에서 중단. write_result_sub_sucess.txt 파일이 생성되지 않음", "11/16(월) 13시 TMC 카키하라 상과 이어서 진행 예정", "v2.1의 ‘9단계 중 3단계’ 표기는 11/13 보고와 달라 이번 판에서 정정", "HU 소프트웨어가 SU#1 → MM Flag 미반환, Wi-Fi · OTT · Digital Key 등 HU 기반 시험 제한", "HU 환경 미구축 31건이 1차 NT의 일부(10/19 스냅샷)"], src: ["tm1113", "pm1103", "pre", "wk"], apx: "apx-cause" },
@@ -390,6 +390,7 @@ deck.s4 = {
 
 Object.assign(deck.ev, {
   blk: { kicker: "현재 블로킹 이슈", title: "11/17 기준 잔여 이슈 5건 (TMC 측 선행 조건 미해소)", facts: ["① MM/HU · ACOS Provisioning (TMC): SU#1 H/U, SubMCU 업데이트 5회 완료, 테스트 필요. 11/18 MM Capable Flag 확인 완료, Flag 조합별 Opt-in/out 추가 검증 필요", "② VDP Diag (TMC): 11/13 최초 실연동, 24 TC 중 2건 완료 · 1건 보류 · 21건 미수행", "③ CTI/TCK 중계 연동 (TMKR·TMC): 27CY SU#2 전용 연계환경 구성 필요", "④ DMS 연동 (TMKR): VDP 실데이터 미수신으로 시뮬레이터 대체 시험", "⑤ ACOS API 사양 (TMC): TSC-GC/GB Request/Response 변경 영향 지속"], src: ["ccb1118"], apx: "apx-cause" },
+  e2e11: { kicker: "Kensho E2E", title: "11/23 진입 — TMKR 강행 입장", facts: ["TMKR은 DVT 잔여와 관계없이 Kensho E2E를 11/23에 진입하려는 입장(11/19 기준)", "E2E 세부일정: 11/23 진입, 12/30 회귀 테스트 종료", "Critical Blocker 5건이 남은 채 진입하면 E2E 기간에도 DVT 잔여 대응 인력이 함께 필요"], src: ["sch", "ccb1118"], apx: "apx-gate" },
   c1: { kicker: "CCB 검토 · 청구 공수", title: "23.01 → 22.06 MM (uCube 0.95 제외)", facts: ["① e-Care 콜버튼 3.86 · ② ACOS 추가개발 8.10 · ③ DVT 기간 10.10 = 22.06 MM", "uCube(0.95)는 LG U+ 연계 시스템 사유라 청구 항목과 청구 MM에서 제외", "3p 요약표 · 15p 산정 기준 문구(‘uCUBE 0.95 MM 포함’) · 3p 노트(49.01 MM)를 함께 고쳐야 함", "4번 섹션 추가 DVT(24.95)는 3p 요약표에 없음 — 요약에 넣을지, 별도 안건으로 둘지 정리 필요"], src: ["ccb1118"], apx: "apx-ccb-order" },
   c2: { kicker: "CCB 검토 · 15p", title: "DVT 기간 변경 · 연동 대응 10.10 MM", facts: ["ACOS 추가 변경 2.60 · TMC 서버 지연 대응 4.50 · TMKR 연계 변경 2.50 · DVT 영향 분석 0.50", "개발사 주장: ① 7/27 규격 배포 이후에도 ACOS 변경이 추가로 있었다 ② VDP · PGM 등 TMC 서버 연동 지연으로 개발자가 투입되어 분석 · 대응했다", "근거로 든 72 · 73p(A4-1 산정 내역)와 86p(A7 변경 · 정정 이력)를 항목별로 대조함", "근거가 확인되는 항목: VDP Diag · VDP CoCo · ACOS API · ACOS Provisioning · MM/HU · CTI · App (단, 상당수가 월 단위 표기)", "근거가 없는 항목: DMS 1.05 · Digital Key 0.25"], src: ["ccb1118"], apx: "apx-ccb-item" },
   c3: { kicker: "CCB 검토 · 21p", title: "추가 DVT 예측 25.00 MM (11.18 ~ 2027.01.29)", facts: ["대기 · 운영 인력은 월 15명 내외로 두고 유휴분은 수행사가 부담, 청구는 실제 대응분 월 10 MM(11월 5 MM)으로 한정", "11월 5.0 · 12월 10.0 · 1월 10.0 = 25.00 MM, uCUBE(LGU+ 연계)는 별도 협의로 제외", "4월 계약 계획의 9월 개발 인력 10 MM(GS 3 · e-Care 7, 81p)과 같은 수준 — 월 10명 이하 주장과 맞음", "이전 판(26.95 MM)과 영역 구성이 같아 15p · 8.10 작업과 겹치는 문구는 그대로 남아 있음 → 부록 ‘21p 교차 검토’", "‘DVT 영향 분석 2.60’(잔여 N/T 재수행 · 회귀시험)은 15p에서 귀책이 ‘LG U+’였던 항목 — 분류 근거 확인"], src: ["ccb1118"], apx: "apx-ccb-21" },
@@ -490,6 +491,10 @@ module.exports = {
     date: "2026.11.14",
     asof: "11/14 논의 · Teams 11/13 · Confluence 11/12 · GSP DB 11/11 기준",
     changelog: [
+      { v: "v2.7", at: "2026.11.19", items: [
+        "메인 메시지 교체 — DVT 종료 어려움(NT 352 / 968 · 3차 39, Critical Blocker 5건) → TMKR 11/23 E2E 강행 → 1월까지 추가 인력 25 MM",
+        "장 순서: 메인 → 블로킹 이슈 → 추가 인력 → 제안 · 실행 → CCB 검토 → Timeline"
+      ] },
       { v: "v2.6", at: "2026.11.19", items: [
         "추가 인력 장 추가 — 추가 DVT 예측 공수 25.00 MM(11.18 ~ 2027.01.29), 대기 · 운영 월 15명 내외 · 청구 월 10 MM(11월 5 MM), 영역별 월 MM 표(uCUBE 제외)",
         "CCB 검토 장 · 21p 교차 검토 부록을 25.00 MM 기준으로 갱신",
