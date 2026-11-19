@@ -237,3 +237,14 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .ccb-cols .nxt ol li { font-size: 13px; line-height: 1.5; }
 @media (max-width: 980px) { .blk5 { grid-template-columns: 1fr; } .ccb-cols { grid-template-columns: 1fr; } }
 .ccb-cols a.more { display: inline-block; margin-top: 8px; color: var(--accent-deep); font-weight: 600; font-size: 12.5px; }
+/* v2.6 추가 인력 */
+.man-cols { margin-top: 16px; display: grid; grid-template-columns: 1fr 1.35fr; gap: 24px; align-items: start; }
+.man-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.man-cards .mc { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+.man-cards .mc small { display: block; font-size: 12px; color: var(--ink-2); }
+.man-cards .mc b { display: block; font-size: 24px; letter-spacing: -.02em; line-height: 1.25; }
+.man-cards .mc span { display: block; font-size: 12px; color: var(--ink-2); }
+.man-cards .mc.hot { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+.man-cards .mc.hot small, .man-cards .mc.hot span { color: rgba(255,255,255,.85); }
+.man-ul { margin: 12px 0 10px 18px; font-size: 13px; line-height: 1.55; }
+@media (max-width: 980px) { .man-cols { grid-template-columns: 1fr; } }

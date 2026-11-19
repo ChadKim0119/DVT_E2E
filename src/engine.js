@@ -1,6 +1,6 @@
   /* ── paging: 메인 1 ~ 4, then Appendix ── */
-  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 6, NM3 = 3, DOTN = { situation: "1", blocking: "B", options: "2", plan: "3", ccb: "C", timeline: "T" }, MAINN = { situation: 1, options: 2, plan: 3 }, trail = [];
-  var labels = { situation: "1 현황 · 쟁점", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
+  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 7, NM3 = 3, DOTN = { situation: "1", blocking: "B", options: "2", plan: "3", ccb: "C", manpower: "M", timeline: "T" }, MAINN = { situation: 1, options: 2, plan: 3 }, trail = [];
+  var labels = { situation: "1 현황 · 쟁점", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", manpower: "추가 인력", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
   pages.forEach(function (p) { p.classList.add("page"); });
   var dotHtml = function (p, i) {
     var main = i < NMAIN, lab = labels[p.id] || p.querySelector(".code").textContent.replace("Appendix", "") + " " + p.querySelector("h3.t").textContent;

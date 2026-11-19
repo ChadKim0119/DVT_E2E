@@ -745,6 +745,17 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 .ccb-cols .nxt ol li { font-size: 13px; line-height: 1.5; }
 @media (max-width: 980px) { .blk5 { grid-template-columns: 1fr; } .ccb-cols { grid-template-columns: 1fr; } }
 .ccb-cols a.more { display: inline-block; margin-top: 8px; color: var(--accent-deep); font-weight: 600; font-size: 12.5px; }
+/* v2.6 추가 인력 */
+.man-cols { margin-top: 16px; display: grid; grid-template-columns: 1fr 1.35fr; gap: 24px; align-items: start; }
+.man-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.man-cards .mc { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; }
+.man-cards .mc small { display: block; font-size: 12px; color: var(--ink-2); }
+.man-cards .mc b { display: block; font-size: 24px; letter-spacing: -.02em; line-height: 1.25; }
+.man-cards .mc span { display: block; font-size: 12px; color: var(--ink-2); }
+.man-cards .mc.hot { background: var(--accent-deep); border-color: var(--accent-deep); color: #fff; }
+.man-cards .mc.hot small, .man-cards .mc.hot span { color: rgba(255,255,255,.85); }
+.man-ul { margin: 12px 0 10px 18px; font-size: 13px; line-height: 1.55; }
+@media (max-width: 980px) { .man-cols { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body data-mode="changed">
@@ -829,6 +840,13 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       '<div class="nxt"><h3>확인할 것</h3><ol>' + s.check.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ol></div></div>' +
       '<p class="askbar">' + esc(s.ask) + '</p></section>';
   }
+  function vMan() {
+    var s = DK.man;
+    return '<section class="sheet" id="manpower"><div class="sh-top"><span class="sheet-no"><span class="pill main">메인</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
+      '<div class="man-cols"><div><h3 class="blk-t" style="margin-top:0">' + esc(s.baseTitle) + '</h3><div class="man-cards">' + s.cards.map(function (c) { return '<div class="mc' + (c.hot ? " hot" : "") + '"><small>' + esc(c.small) + '</small><b>' + esc(c.v) + '</b><span>' + esc(c.d) + '</span></div>'; }).join("") + '</div>' +
+      '<ul class="man-ul">' + s.bullets.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' + table(s.perHead, s.perRows, { nowrap: [0, 1, 2], right: [1, 2] }) + '</div>' +
+      '<div>' + table(s.areaHead, s.areaRows, { nowrap: [0, 1, 3, 4, 5, 6], right: [3, 4, 5, 6] }) + '<p class="blk-foot">' + esc(s.foot) + '</p></div></div></section>';
+  }
   function dayN(d) { return (Date.UTC(d[0], d[1] - 1, d[2]) - Date.UTC.apply(null, [DK.tl.start[0], DK.tl.start[1] - 1, DK.tl.start[2]])) / 864e5; }
   function vTL() {
     var t = DK.tl, N2 = t.days, pc = function (d) { return (dayN(d) / N2 * 100).toFixed(3) + "%"; };
@@ -912,16 +930,16 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   /* ── mount ── */
   $("chg").innerHTML = '변경 이력 <b>' + esc(D.meta.changelog[0].v) + '</b>'; $("chg").setAttribute("aria-label", "이 보드의 변경 이력, 현재 " + D.meta.changelog[0].v);
   $("brand").innerHTML = esc(D.meta.title) + ' <span>· ' + esc(D.meta.project) + ' · ' + esc(D.meta.date) + '</span>';
-  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
-  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vTL() + vAppendix();
+  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["manpower", "추가 인력"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
+  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vMan() + vTL() + vAppendix();
   function setMode(m) {
     if (sumEl) clearSum();
     document.body.setAttribute("data-mode", m);
     Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === m)); });
   }
   /* ── paging: 메인 1 ~ 4, then Appendix ── */
-  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 6, NM3 = 3, DOTN = { situation: "1", blocking: "B", options: "2", plan: "3", ccb: "C", timeline: "T" }, MAINN = { situation: 1, options: 2, plan: 3 }, trail = [];
-  var labels = { situation: "1 현황 · 쟁점", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
+  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 7, NM3 = 3, DOTN = { situation: "1", blocking: "B", options: "2", plan: "3", ccb: "C", manpower: "M", timeline: "T" }, MAINN = { situation: 1, options: 2, plan: 3 }, trail = [];
+  var labels = { situation: "1 현황 · 쟁점", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", manpower: "추가 인력", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
   pages.forEach(function (p) { p.classList.add("page"); });
   var dotHtml = function (p, i) {
     var main = i < NMAIN, lab = labels[p.id] || p.querySelector(".code").textContent.replace("Appendix", "") + " " + p.querySelector("h3.t").textContent;

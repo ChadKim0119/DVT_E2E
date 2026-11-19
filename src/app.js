@@ -54,6 +54,13 @@
       '<div class="nxt"><h3>확인할 것</h3><ol>' + s.check.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ol></div></div>' +
       '<p class="askbar">' + esc(s.ask) + '</p></section>';
   }
+  function vMan() {
+    var s = DK.man;
+    return '<section class="sheet" id="manpower"><div class="sh-top"><span class="sheet-no"><span class="pill main">메인</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
+      '<div class="man-cols"><div><h3 class="blk-t" style="margin-top:0">' + esc(s.baseTitle) + '</h3><div class="man-cards">' + s.cards.map(function (c) { return '<div class="mc' + (c.hot ? " hot" : "") + '"><small>' + esc(c.small) + '</small><b>' + esc(c.v) + '</b><span>' + esc(c.d) + '</span></div>'; }).join("") + '</div>' +
+      '<ul class="man-ul">' + s.bullets.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ul>' + table(s.perHead, s.perRows, { nowrap: [0, 1, 2], right: [1, 2] }) + '</div>' +
+      '<div>' + table(s.areaHead, s.areaRows, { nowrap: [0, 1, 3, 4, 5, 6], right: [3, 4, 5, 6] }) + '<p class="blk-foot">' + esc(s.foot) + '</p></div></div></section>';
+  }
   function dayN(d) { return (Date.UTC(d[0], d[1] - 1, d[2]) - Date.UTC.apply(null, [DK.tl.start[0], DK.tl.start[1] - 1, DK.tl.start[2]])) / 864e5; }
   function vTL() {
     var t = DK.tl, N2 = t.days, pc = function (d) { return (dayN(d) / N2 * 100).toFixed(3) + "%"; };
@@ -137,8 +144,8 @@
   /* ── mount ── */
   $("chg").innerHTML = '변경 이력 <b>' + esc(D.meta.changelog[0].v) + '</b>'; $("chg").setAttribute("aria-label", "이 보드의 변경 이력, 현재 " + D.meta.changelog[0].v);
   $("brand").innerHTML = esc(D.meta.title) + ' <span>· ' + esc(D.meta.project) + ' · ' + esc(D.meta.date) + '</span>';
-  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
-  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vTL() + vAppendix();
+  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["manpower", "추가 인력"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
+  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vMan() + vTL() + vAppendix();
   function setMode(m) {
     if (sumEl) clearSum();
     document.body.setAttribute("data-mode", m);
