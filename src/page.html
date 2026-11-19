@@ -729,6 +729,22 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 #app .ed-flex { display: block !important; }
 .ed-ui .c-w { display: none; }
 .ed-ui[data-sel="el"] .c-w, .ed-ui[data-edit="1"] .c-w { display: inline-block; } /* 블록 선택 또는 글자 편집 중에 폭 · 한 줄 버튼 표시 */
+/* v2.5 블로킹 이슈 · CCB 검토 */
+.blk5 { margin-top: 18px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.blk5 .bc { border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px 12px; background: var(--paper, #fff); min-width: 0; }
+.blk5 .bc h3 { font-size: 15px; margin: 0 0 8px; }
+.blk5 .bc .who { display: block; font-size: 12px; font-weight: 700; color: var(--accent-deep); margin-bottom: 6px; }
+.blk5 .bc b { display: block; font-size: 13.5px; line-height: 1.45; }
+.blk5 .bc p { font-size: 12.5px; line-height: 1.5; color: var(--ink-2); margin-top: 10px; }
+.blk5 .bc.hot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.blk5 .bc.hot p { color: rgba(255,255,255,.75); }
+.blk5 .bc.hot .who { color: #ff7ab8; }
+.blk-t { margin-top: 18px; font-size: 16px; }
+.blk-foot { margin-top: 6px; font-size: 12.5px; color: var(--ink-2); }
+.ccb-cols { margin-top: 16px; display: grid; grid-template-columns: 1.9fr 1fr; gap: 20px; align-items: start; }
+.ccb-cols .nxt ol li { font-size: 13px; line-height: 1.5; }
+@media (max-width: 980px) { .blk5 { grid-template-columns: 1fr; } .ccb-cols { grid-template-columns: 1fr; } }
+.ccb-cols a.more { display: inline-block; margin-top: 8px; color: var(--accent-deep); font-weight: 600; font-size: 12.5px; }
 </style>
 </head>
 <body data-mode="changed">
@@ -799,6 +815,20 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       '<div class="cols2" style="margin-top:16px"><div class="tracks">' + s.tracks.map(function (t) { return '<button type="button" class="trk" data-panel="' + t.ev + '"><b>' + esc(t.h) + '</b><span>' + esc(t.b) + '</span></button>'; }).join("") + '</div>' +
       '<div class="nxt"><h3>다음 단계</h3><ol>' + s.next.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ol><a class="more" href="#timeline">' + esc(s.tl) + '</a></div></div></section>';
   }
+  function vBlk() {
+    var s = DK.blk, br = function (t) { return esc(t).replace(/\n/g, "<br>"); };
+    return '<section class="sheet" id="blocking"><div class="sh-top"><span class="sheet-no"><span class="pill main">메인</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
+      '<div class="blk5">' + s.cards.map(function (c) { return '<div class="bc' + (c.hot ? " hot" : "") + '"><h3>' + esc(c.no) + ' ' + esc(c.h) + '</h3><span class="who">' + esc(c.who) + '</span><b>' + br(c.fact) + '</b><p>' + br(c.note) + '</p></div>'; }).join("") + '</div>' +
+      '<h3 class="blk-t">' + esc(s.doneTitle) + '</h3>' + table(s.doneHead, s.doneRows, { nowrap: [0] }) + '<p class="blk-foot">' + esc(s.foot) + '</p></section>';
+  }
+  function vS4() {
+    var s = DK.s4;
+    return '<section class="sheet" id="ccb"><div class="sh-top"><span class="sheet-no"><span class="pill main">검토</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
+      '<div class="kpi4 num">' + s.kpis.map(function (k) { return '<button type="button" class="' + (k.hot ? "hot" : "") + '" data-panel="' + k.k + '"><small>' + esc(k.small) + '</small><span class="v">' + esc(k.v) + '<em>' + esc(k.em) + '</em></span><span class="d">' + esc(k.d) + '</span></button>'; }).join("") + '</div>' +
+      '<div class="ccb-cols"><div>' + table(s.catHead, s.catRows, { nowrap: [2], right: [2] }) + '<a class="more" href="#apx-ccb-item">15p 항목별 확인표</a> · <a class="more" href="#apx-ccb-21">21p 교차 검토</a> · <a class="more" href="#apx-ccb-order">순서 조정(안)</a></div>' +
+      '<div class="nxt"><h3>확인할 것</h3><ol>' + s.check.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ol></div></div>' +
+      '<p class="askbar">' + esc(s.ask) + '</p></section>';
+  }
   function dayN(d) { return (Date.UTC(d[0], d[1] - 1, d[2]) - Date.UTC.apply(null, [DK.tl.start[0], DK.tl.start[1] - 1, DK.tl.start[2]])) / 864e5; }
   function vTL() {
     var t = DK.tl, N2 = t.days, pc = function (d) { return (dayN(d) / N2 * 100).toFixed(3) + "%"; };
@@ -837,9 +867,9 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       '<h4>이 보드가 참조한 문서</h4><ul class="plain">' + Object.keys(SRC).map(function (k) { var s = SRC[k]; return '<li>' + (s.u ? '<a href="' + s.u + '" target="_blank" rel="noopener">' + esc(s.t) + '</a>' : esc(s.t) + ' (' + (s.n || "프로젝트 DB 문서") + ')') + '</li>'; }).join("") + '</ul>';
   }
   function apxLabel(id) { var x = APX.filter(function (p) { return p[0].id === id; })[0]; return x ? x[0].code + " · " + x[0].title : id; }
-  function bNew(o) { return function () { return table(o.head, o.rows, { nowrap: [0] }); }; }
+  function bNew(o) { return function () { return table(o.head, o.rows, { nowrap: o.head[1] === "MM" ? [0, 1] : [0] }); }; }
   var N4 = D.apxNew;
-  var APX = [[N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
+  var APX = [[N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [N4.m8, bNew(N4.m8)], [N4.m9, bNew(N4.m9)], [N4.m10, bNew(N4.m10)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
   APX.forEach(function (x, i) { x[0].code = "A" + (i + 1); });
   function vAppendix() {
     return '<section class="sheet apx-head" id="appendix"><span class="sheet-no"><span class="pill">Appendix</span>목차</span><h2>Appendix · 근거 자료</h2><p class="lede">메인 장표의 숫자와 원인 분류가 나온 원본 기록. ' + esc(D.meta.asof) + '.</p>' +
@@ -882,20 +912,20 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   /* ── mount ── */
   $("chg").innerHTML = '변경 이력 <b>' + esc(D.meta.changelog[0].v) + '</b>'; $("chg").setAttribute("aria-label", "이 보드의 변경 이력, 현재 " + D.meta.changelog[0].v);
   $("brand").innerHTML = esc(D.meta.title) + ' <span>· ' + esc(D.meta.project) + ' · ' + esc(D.meta.date) + '</span>';
-  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
-  $("app").innerHTML = vS1() + vS2() + vS3() + vTL() + vAppendix();
+  $("nav").innerHTML = [["situation", "1 현황 · 쟁점"], ["blocking", "블로킹 이슈"], ["options", "2 제안"], ["plan", "3 실행 · 공수 전제"], ["ccb", "CCB 검토"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
+  $("app").innerHTML = vS1() + vBlk() + vS2() + vS3() + vS4() + vTL() + vAppendix();
   function setMode(m) {
     if (sumEl) clearSum();
     document.body.setAttribute("data-mode", m);
     Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === m)); });
   }
   /* ── paging: 메인 1 ~ 4, then Appendix ── */
-  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 4, NM3 = 3, trail = [];
-  var labels = { situation: "1 현황 · 쟁점", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
+  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 6, NM3 = 3, DOTN = { situation: "1", blocking: "B", options: "2", plan: "3", ccb: "C", timeline: "T" }, MAINN = { situation: 1, options: 2, plan: 3 }, trail = [];
+  var labels = { situation: "1 현황 · 쟁점", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", options: "2 제안", plan: "3 실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
   pages.forEach(function (p) { p.classList.add("page"); });
   var dotHtml = function (p, i) {
     var main = i < NMAIN, lab = labels[p.id] || p.querySelector(".code").textContent.replace("Appendix", "") + " " + p.querySelector("h3.t").textContent;
-    return '<li><button type="button" class="dot' + (main ? "" : " sm") + '" data-go="' + i + '" data-label="' + esc(lab) + '" aria-label="' + esc(lab) + '">' + (main ? (i < NM3 ? i + 1 : "T") : "") + '</button></li>';
+    return '<li><button type="button" class="dot' + (main ? "" : " sm") + '" data-go="' + i + '" data-label="' + esc(lab) + '" aria-label="' + esc(lab) + '">' + (main ? (DOTN[p.id] || "") : "") + '</button></li>';
   };
   $("dots-main").innerHTML = pages.slice(0, NMAIN).map(dotHtml).join("");
   $("dots-apx").innerHTML = pages.slice(NMAIN).map(function (p, i) { return dotHtml(p, i + NMAIN); }).join("");
@@ -933,7 +963,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
     Array.prototype.forEach.call(dots, function (d) { var on = +d.getAttribute("data-go") === i; d.classList.toggle("on", on); if (on) d.setAttribute("aria-current", "page"); else d.removeAttribute("aria-current"); });
     var sec = i < NMAIN ? pages[i].id : "appendix";
     Array.prototype.forEach.call(links, function (a) { a.classList.toggle("on", a.getAttribute("href") === "#" + sec); });
-    $("count").innerHTML = i < NM3 ? "메인<br>" + (i + 1) + " / " + NM3 : i < NMAIN ? "Timeline" : "Appendix<br>" + (i - NMAIN + 1) + " / " + (pages.length - NMAIN);
+    $("count").innerHTML = MAINN[pages[i].id] ? "메인<br>" + MAINN[pages[i].id] + " / " + NM3 : i < NMAIN ? (labels[pages[i].id] || "").replace(" ", "<br>") : "Appendix<br>" + (i - NMAIN + 1) + " / " + (pages.length - NMAIN);
     $("prev").disabled = i === 0; $("next").disabled = i === pages.length - 1;
     $("pg-back").hidden = trail.length === 0;
     window.scrollTo(0, 0); fit(); pages[i].scrollTop = 0;

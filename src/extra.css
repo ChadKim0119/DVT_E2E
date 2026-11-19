@@ -221,3 +221,19 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
 #app .ed-flex { display: block !important; }
 .ed-ui .c-w { display: none; }
 .ed-ui[data-sel="el"] .c-w, .ed-ui[data-edit="1"] .c-w { display: inline-block; } /* 블록 선택 또는 글자 편집 중에 폭 · 한 줄 버튼 표시 */
+/* v2.5 블로킹 이슈 · CCB 검토 */
+.blk5 { margin-top: 18px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.blk5 .bc { border: 1px solid var(--line); border-radius: 10px; padding: 14px 14px 12px; background: var(--paper, #fff); min-width: 0; }
+.blk5 .bc h3 { font-size: 15px; margin: 0 0 8px; }
+.blk5 .bc .who { display: block; font-size: 12px; font-weight: 700; color: var(--accent-deep); margin-bottom: 6px; }
+.blk5 .bc b { display: block; font-size: 13.5px; line-height: 1.45; }
+.blk5 .bc p { font-size: 12.5px; line-height: 1.5; color: var(--ink-2); margin-top: 10px; }
+.blk5 .bc.hot { background: var(--ink); border-color: var(--ink); color: #fff; }
+.blk5 .bc.hot p { color: rgba(255,255,255,.75); }
+.blk5 .bc.hot .who { color: #ff7ab8; }
+.blk-t { margin-top: 18px; font-size: 16px; }
+.blk-foot { margin-top: 6px; font-size: 12.5px; color: var(--ink-2); }
+.ccb-cols { margin-top: 16px; display: grid; grid-template-columns: 1.9fr 1fr; gap: 20px; align-items: start; }
+.ccb-cols .nxt ol li { font-size: 13px; line-height: 1.5; }
+@media (max-width: 980px) { .blk5 { grid-template-columns: 1fr; } .ccb-cols { grid-template-columns: 1fr; } }
+.ccb-cols a.more { display: inline-block; margin-top: 8px; color: var(--accent-deep); font-weight: 600; font-size: 12.5px; }
