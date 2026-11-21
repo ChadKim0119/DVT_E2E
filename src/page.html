@@ -832,14 +832,6 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
       '<div class="blk5">' + s.cards.map(function (c) { return '<div class="bc' + (c.hot ? " hot" : "") + '"><h3>' + esc(c.no) + ' ' + esc(c.h) + '</h3><span class="who">' + esc(c.who) + '</span><b>' + br(c.fact) + '</b><p>' + br(c.note) + '</p></div>'; }).join("") + '</div>' +
       '<h3 class="blk-t">' + esc(s.doneTitle) + '</h3>' + table(s.doneHead, s.doneRows, { nowrap: [0] }) + '<p class="blk-foot">' + esc(s.foot) + '</p></section>';
   }
-  function vS4() {
-    var s = DK.s4;
-    return '<section class="sheet" id="ccb"><div class="sh-top"><span class="sheet-no"><span class="pill main">검토</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
-      '<div class="kpi4 num">' + s.kpis.map(function (k) { return '<button type="button" class="' + (k.hot ? "hot" : "") + '" data-panel="' + k.k + '"><small>' + esc(k.small) + '</small><span class="v">' + esc(k.v) + '<em>' + esc(k.em) + '</em></span><span class="d">' + esc(k.d) + '</span></button>'; }).join("") + '</div>' +
-      '<div class="ccb-cols"><div>' + table(s.catHead, s.catRows, { nowrap: [2], right: [2] }) + '<a class="more" href="#apx-ccb-item">15p 항목별 확인표</a> · <a class="more" href="#apx-ccb-21">21p 교차 검토</a> · <a class="more" href="#apx-ccb-order">순서 조정(안)</a></div>' +
-      '<div class="nxt"><h3>확인할 것</h3><ol>' + s.check.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join("") + '</ol></div></div>' +
-      '<p class="askbar">' + esc(s.ask) + '</p></section>';
-  }
   function vMan() {
     var s = DK.man;
     return '<section class="sheet" id="manpower"><div class="sh-top"><span class="sheet-no"><span class="pill main">메인</span>' + esc(s.kicker) + '</span></div><h2>' + esc(s.title) + '</h2><p class="lede">' + esc(s.lede) + '</p>' +
@@ -887,7 +879,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   function apxLabel(id) { var x = APX.filter(function (p) { return p[0].id === id; })[0]; return x ? x[0].code + " · " + x[0].title : id; }
   function bNew(o) { return function () { return table(o.head, o.rows, { nowrap: o.head[1] === "MM" ? [0, 1] : [0] }); }; }
   var N4 = D.apxNew;
-  var APX = [[N4.m11, bNew(N4.m11)], [N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [N4.m8, bNew(N4.m8)], [N4.m9, bNew(N4.m9)], [N4.m10, bNew(N4.m10)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
+  var APX = [[N4.m11, bNew(N4.m11)], [N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
   APX.forEach(function (x, i) { x[0].code = "A" + (i + 1); });
   function vAppendix() {
     return '<section class="sheet apx-head" id="appendix"><span class="sheet-no"><span class="pill">Appendix</span>목차</span><h2>Appendix · 근거 자료</h2><p class="lede">메인 장표의 숫자와 원인 분류가 나온 원본 기록. ' + esc(D.meta.asof) + '.</p>' +
@@ -930,16 +922,16 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   /* ── mount ── */
   $("chg").innerHTML = '변경 이력 <b>' + esc(D.meta.changelog[0].v) + '</b>'; $("chg").setAttribute("aria-label", "이 보드의 변경 이력, 현재 " + D.meta.changelog[0].v);
   $("brand").innerHTML = esc(D.meta.title) + ' <span>· ' + esc(D.meta.project) + ' · ' + esc(D.meta.date) + '</span>';
-  $("nav").innerHTML = [["situation", "메인"], ["blocking", "블로킹 이슈"], ["manpower", "추가 인력"], ["options", "제안"], ["plan", "실행 · 공수 전제"], ["ccb", "CCB 검토"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
-  $("app").innerHTML = vS1() + vBlk() + vMan() + vS2() + vS3() + vS4() + vTL() + vAppendix();
+  $("nav").innerHTML = [["situation", "메인"], ["blocking", "블로킹 이슈"], ["manpower", "추가 인력"], ["options", "제안"], ["plan", "실행 · 공수 전제"], ["timeline", "Timeline"]].map(function (n) { return '<a href="#' + n[0] + '">' + n[1] + '</a>'; }).join("") + '<span class="sep"></span><a href="#appendix">Appendix</a>';
+  $("app").innerHTML = vS1() + vBlk() + vMan() + vS2() + vS3() + vTL() + vAppendix();
   function setMode(m) {
     if (sumEl) clearSum();
     document.body.setAttribute("data-mode", m);
     Array.prototype.forEach.call(document.querySelectorAll("[data-set]"), function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-set") === m)); });
   }
   /* ── paging: 메인 1 ~ 4, then Appendix ── */
-  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 7, NM3 = 3, DOTN = { situation: "M", blocking: "1", manpower: "2", options: "3", plan: "4", ccb: "C", timeline: "T" }, MAINN = {}, trail = [];
-  var labels = { situation: "메인 메시지", blocking: "현재 블로킹 이슈", ccb: "CCB 검토", manpower: "추가 인력", options: "제안", plan: "실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
+  var pages = Array.prototype.slice.call(document.querySelectorAll("#app > section")), cur = 0, NMAIN = 6, NM3 = 3, DOTN = { situation: "M", blocking: "1", manpower: "2", options: "3", plan: "4", timeline: "T" }, MAINN = {}, trail = [];
+  var labels = { situation: "메인 메시지", blocking: "현재 블로킹 이슈", manpower: "추가 인력", options: "제안", plan: "실행 · 공수 전제", timeline: "Timeline", appendix: "Appendix 목차" };
   pages.forEach(function (p) { p.classList.add("page"); });
   var dotHtml = function (p, i) {
     var main = i < NMAIN, lab = labels[p.id] || p.querySelector(".code").textContent.replace("Appendix", "") + " " + p.querySelector("h3.t").textContent;

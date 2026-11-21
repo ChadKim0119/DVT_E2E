@@ -15,7 +15,7 @@ const src = {
   pre: { t: "E2E 사전준비 (11/11)", u: W + "1133608962" },
   sch: { t: "E2E 세부일정 (11/03)", u: W + "1121320967" },
   db: { t: "GSP DB · 이슈트래킹 통합본 (11/11)", u: "" },
-  hp: { t: "E2E Conditional Entry Handoff 패키지 (Copilot 제안, 11/14)", u: "", n: "내부 자료" },
+  hp: { t: "E2E Conditional Entry Handoff 패키지 (11/14)", u: "", n: "내부 자료" },
   pmr: { t: "E2E · DVT PM 보고서 (11/06)", u: "", n: "내부 자료" },
   wk: { t: "주간보고 10월 3주차 (10/19)", u: "", n: "내부 자료" },
   mail0915: { t: "일정 협의 요청 메일 (9/15)", u: "", n: "내부 자료" },
@@ -234,7 +234,7 @@ const deck = {
     cause: { kicker: "근거 · 원인", title: "NT의 원인은 외부 연동 환경", facts: ["CTI 미개발: CCW 236 TC(2차 NT의 73%), 완료 12월 — TMKR 측 협력사 영역", "TMC: VDP 접속정보 · 콜백, HU 소프트웨어(SU#1), GSA · Auth0, DTC 재현 방법 미확정", "DMS 사양 변경 지속: API 5 → 24개, 시나리오 재작성", "1차 NT 144건 중 Blocked 104 + HU 환경 미구축 31 = 135건(93.8%)이 선행조건 · 환경 제약과 연관(10/19 스냅샷)", "11/14 논의: 당사 개발 로직은 내부 검증 완료"], src: ["pm1028", "pm1103", "pre", "wk", "db"], apx: "apx-cause" },
     impact: { kicker: "근거 · 일정 영향", title: "현행 방식이면 1 ~ 2월", facts: ["현행 방식(Fail · NT 0까지)을 유지할 경우 DK 완료 기준으로 1 ~ 2월까지 소요 가능", "E2E 현행 진입 11/23과 중첩 — 11/03 PM 합의: E2E 진입 시점에는 알려진 제약으로 NT가 생기지 않도록 일정 재구성", "DVT 기간 변경은 CCB 안건과 연계(기존 1개월 → 1.5개월 변경안)"], src: ["pm1103", "pm1111", "ccb"], apx: "apx-plan" },
     optA: { kicker: "근거 · 대안 A", title: "현행 유지", facts: ["Fail · NT가 0이 될 때까지 DVT를 연장", "외부 환경(HU · VDP · CTI) 해소 일정에 종속되어 종료일을 약속할 수 없음", "E2E와 일정이 겹치고 DVT 기간 변경은 CCB 안건"], apx: "apx-opt" },
-    optB: { kicker: "근거 · 대안 B (제안)", title: "Open Item 유지 + E2E 조건부 진입", facts: ["당사 개발 범위(서비스 가입 · ACOS IF · VDP 연계)에 한정해 조건부 승인", "TMC 영역(HU 기능 등)은 범위에서 제외, Open Item으로 유지하고 환경 확보 후 별도 재시험", "DVT를 완료 · Pass로 표기하지 않음 — E2E 진입 승인과 DVT 완료 승인을 분리(Copilot 제안)", "승인 후에도 개발 완료 검증 약 1개월 추가", "TMKR 판단 사항 — 당사가 임의로 종결하지 않음"], src: ["hp"], apx: "apx-scope" },
+    optB: { kicker: "근거 · 대안 B (제안)", title: "Open Item 유지 + E2E 조건부 진입", facts: ["당사 개발 범위(서비스 가입 · ACOS IF · VDP 연계)에 한정해 조건부 승인", "TMC 영역(HU 기능 등)은 범위에서 제외, Open Item으로 유지하고 환경 확보 후 별도 재시험", "DVT를 완료 · Pass로 표기하지 않음 — E2E 진입 승인과 DVT 완료 승인을 분리", "승인 후에도 개발 완료 검증 약 1개월 추가", "TMKR 판단 사항 — 당사가 임의로 종결하지 않음"], src: ["hp"], apx: "apx-scope" },
     optC: { kicker: "근거 · 대안 C", title: "전면 재일정", facts: ["일본 측 협의가 이루어지지 않거나 Gate를 충족하지 못하는 경우의 대안(No-Go / Scope Reduction)", "DVT · E2E 일정 전체를 다시 수립하며 종료 시점은 미정"], apx: "apx-opt" },
     p1: { kicker: "전제 1", title: "DVT 정리 기준", facts: ["조건부 승인 범위: 서비스 가입 · ACOS 인터페이스 · VDP 연계 테스트", "FAIL은 FAIL, 시험 불가는 N/T · External Blocked로 유지 — 일정을 이유로 Pass 전환하지 않음", "승인 후 개발 완료 검증은 약 1개월(미확정)", "미승인 시 DVT 연장분은 CCB 안건으로 협의"], src: ["hp"], apx: "apx-man" },
     p2: { kicker: "전제 2", title: "E2E 진입 조건", facts: ["VDP 서버 영향으로 e-Care E2E는 현재 진행 불가", "초반 E2E는 GS TC 위주로 진행 예정", "Gate G-01 ~ G-09 충족 여부로 Go / Conditional Go / No-Go 서면 판정(PM 보고 제안)", "불가 시 전체 재일정"], src: ["pmr", "hp"], apx: "apx-gate" },
@@ -393,7 +393,7 @@ Object.assign(deck.ev, {
   e2e11: { kicker: "Kensho E2E", title: "DVT 잔여 이슈 지속 관리 + E2E 병행 수행", facts: ["진행 기조: DVT의 잔여 이슈는 일정 조율을 통해 지속 관리하고, E2E는 병행 수행", "VDP 서버 영향으로 e-Care E2E는 진행 불가 → 초반 E2E는 GS TC 위주로 진행 예정", "E2E 세부일정: 11/23 진입, 12/30 회귀 테스트 종료", "잔여 이슈가 남은 상태로 병행하므로 E2E 기간에도 DVT 잔여 대응 인력이 함께 필요"], src: ["sch", "ccb1118"], apx: "apx-gate" },
   c1: { kicker: "CCB 검토 · 청구 공수", title: "23.01 → 22.06 MM (uCube 0.95 제외)", facts: ["① e-Care 콜버튼 3.86 · ② ACOS 추가개발 8.10 · ③ DVT 기간 10.10 = 22.06 MM", "uCube(0.95)는 LG U+ 연계 시스템 사유라 청구 항목과 청구 MM에서 제외", "3p 요약표 · 15p 산정 기준 문구(‘uCUBE 0.95 MM 포함’) · 3p 노트(49.01 MM)를 함께 고쳐야 함", "4번 섹션 추가 DVT(24.95)는 3p 요약표에 없음 — 요약에 넣을지, 별도 안건으로 둘지 정리 필요"], src: ["ccb1118"], apx: "apx-ccb-order" },
   c2: { kicker: "CCB 검토 · 15p", title: "DVT 기간 변경 · 연동 대응 10.10 MM", facts: ["ACOS 추가 변경 2.60 · TMC 서버 지연 대응 4.50 · TMKR 연계 변경 2.50 · DVT 영향 분석 0.50", "개발사 주장: ① 7/27 규격 배포 이후에도 ACOS 변경이 추가로 발생 ② VDP · PGM 등 TMC 서버 연동 지연으로 개발자가 투입되어 분석 · 대응", "근거로 든 72 · 73p(A4-1 산정 내역)와 86p(A7 변경 · 정정 이력)를 항목별로 대조함", "근거가 확인되는 항목: VDP Diag · VDP CoCo · ACOS API · ACOS Provisioning · MM/HU · CTI · App (단, 상당수가 월 단위 표기)", "근거가 없는 항목: DMS 1.05 · Digital Key 0.25"], src: ["ccb1118"], apx: "apx-ccb-item" },
-  c3: { kicker: "CCB 검토 · 21p", title: "추가 DVT 예측 25.00 MM (11.18 ~ 2027.01.29)", facts: ["대기 · 운영 인력은 월 15명 내외로 두고 유휴분은 수행사가 부담, 청구는 실제 대응분 월 10 MM(11월 5 MM)으로 한정", "11월 5.0 · 12월 10.0 · 1월 10.0 = 25.00 MM, uCUBE(LGU+ 연계)는 별도 협의로 제외", "4월 계약 계획의 9월 개발 인력 10 MM(GS 3 · e-Care 7, 81p)과 같은 수준 — 월 10명 이하 주장과 맞음", "이전 판(26.95 MM)과 영역 구성이 같아 15p · 8.10 작업과 겹치는 문구는 그대로 남아 있음 → 부록 ‘21p 교차 검토’", "‘DVT 영향 분석 2.60’(잔여 N/T 재수행 · 회귀시험)은 15p에서 귀책이 ‘LG U+’였던 항목 — 분류 근거 확인"], src: ["ccb1118"], apx: "apx-ccb-21" },
+  c3: { kicker: "추가 인력 근거", title: "추가 DVT 예측 25.00 MM (11.18 ~ 2027.01.29)", facts: ["대기 · 운영 인력은 월 15명 내외로 두고 유휴분은 수행사가 부담, 청구는 실제 대응분 월 10 MM(11월 5 MM)으로 한정", "11월 5.0 · 12월 10.0 · 1월 10.0 = 25.00 MM, uCUBE(LGU+ 연계)는 별도 협의로 제외", "4월 계약 계획의 9월 개발 인력 10 MM(GS 3 · e-Care 7) 수준", "DVT 잔여 대응과 E2E 병행 기간 동안 모듈 담당자 대기 · 운영 필요"], src: ["ccb1118"], apx: "apx-man" },
   c4: { kicker: "CCB 검토 · 실적", title: "10 · 11월 개발자는 13 · 13 MM", facts: ["81p 월별 실제 투입: 10월 18 = 개발 13(GS 4 · e-Care 9) + 품질 4 + 기획 1, 11월 17 = 개발 13 + 품질 4", "21p 그래프의 실적(17 · 18)은 품질 · 기획 포함 수치 — 개발자만 남기면 13 · 13", "검토 지시의 ‘10월 17 · 11월 18’과 81p의 ‘10월 18 · 11월 17’은 순서가 반대 — 그래프 수정 시 함께 확인", "첨부본(11/18) 21p 그래프에는 실적 막대 없이 범례만 남아 있음"], src: ["ccb1118"], apx: "apx-ccb-21" },
 });
 
@@ -496,6 +496,12 @@ deck.man = {
   foot: "※ 월 MM = 해당 월 실제 대응 예상 인원 기준(11월은 11/18 이후 잔여 기간). uCUBE(LGU+ 연계)는 별도 협의로 본 산정에서 제외",
 };
 
+/* ── v2.9 (11/21): TMKR 보고용 — 내부 검토 장표 · 부록은 출력에서 제외(원문은 이 파일에 보존) ── */
+const INTERNAL = /CCB 검토|강행|Copilot|15p|21p|uCube|청구 22\.06|순서 조정|출처별 적용 한계/;
+delete deck.s4;
+["c1", "c2", "c4"].forEach(function (k) { delete deck.ev[k]; });
+["m6", "m7", "m8", "m9", "m10"].forEach(function (k) { delete apxNew[k]; });
+
 module.exports = {
   meta: {
     title: "DVT 및 E2E 운영방안 논의",
@@ -503,6 +509,9 @@ module.exports = {
     date: "2026.11.21",
     asof: "DVT 통합 결과 최신 집계(11/21 반영) · 11/14 논의 · Teams 11/13 · Confluence 11/12 · GSP DB 11/11 기준",
     changelog: [
+      { v: "v2.9", at: "2026.11.21", items: [
+        "TMKR 보고용으로 내부 검토용 장표 1장과 내부용 부록 5장을 화면에서 제외"
+      ] },
       { v: "v2.8", at: "2026.11.21", items: [
         "DVT 통합 결과 최신 집계 반영 — 992 TC 중 Pass 656 · Fail 2 · NT 334 (GS 326/288/0/38 · OPW 292/269/0/23 · CCW 236/0/0/236 · DMS 114/78/1/35 · VDP(Diag) 24/21/1/2), 부록 ‘DVT 통합 결과’ 추가",
         "진행 기조 반영 — DVT 잔여 이슈는 일정 조율을 통해 지속 관리하고 E2E는 병행 수행. VDP 서버 영향으로 e-Care E2E는 진행 불가하여 초반 E2E는 GS TC 위주로 진행(메인 · 실행 · Timeline)",
@@ -566,6 +575,7 @@ module.exports = {
     ],
   },
   src, rounds, daily, ntWhy, remain, deck, apxNew,
+
   appendix: {
     a1: { id: "apx-r1", code: "A1", title: "1차 DVT 일별 결과 (GS 290 TC)", message: "1차는 GS만 시험. 10/07 Fail 207건은 Block 분류 폐지(10/07 PM) 이후 재판정되어 10/13 Fail 14 · NT 157로 변경됨.", source: "r1" },
     a2: { id: "apx-r2", code: "A2", title: "2차 DVT 일별 · 영역별 결과 (854 TC)", message: "누적 NT는 362 → 288(선행조건 변경) 이후 300 안팎에서 정체됨. 남은 NT 323건 중 236건이 콜센터 웹임.", source: "r2" },
@@ -636,3 +646,4 @@ module.exports = {
       ] },
   },
 };
+module.exports.meta.changelog = module.exports.meta.changelog.map(function (c) { return { v: c.v, at: c.at, items: c.items.filter(function (t) { return !INTERNAL.test(t); }) }; }).filter(function (c) { return c.items.length; });
