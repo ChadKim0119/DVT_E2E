@@ -887,7 +887,7 @@ body.editing #app .ed-ing:not(.ed-s) { outline: 2px solid var(--accent); outline
   function apxLabel(id) { var x = APX.filter(function (p) { return p[0].id === id; })[0]; return x ? x[0].code + " · " + x[0].title : id; }
   function bNew(o) { return function () { return table(o.head, o.rows, { nowrap: o.head[1] === "MM" ? [0, 1] : [0] }); }; }
   var N4 = D.apxNew;
-  var APX = [[N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [N4.m8, bNew(N4.m8)], [N4.m9, bNew(N4.m9)], [N4.m10, bNew(N4.m10)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
+  var APX = [[N4.m11, bNew(N4.m11)], [N4.m1, bNew(N4.m1)], [N4.m2, bNew(N4.m2)], [N4.m3, bNew(N4.m3)], [N4.m4, bNew(N4.m4)], [N4.m5, bNew(N4.m5)], [N4.m6, bNew(N4.m6)], [N4.m7, bNew(N4.m7)], [N4.m8, bNew(N4.m8)], [N4.m9, bNew(N4.m9)], [N4.m10, bNew(N4.m10)], [A.a4, bCause], [A.a1, bR1], [A.a2, bR2], [A.a3, bR3], [A.a5, bPre], [A.a6, bPlanHist], [A.a7, bSrc]];
   APX.forEach(function (x, i) { x[0].code = "A" + (i + 1); });
   function vAppendix() {
     return '<section class="sheet apx-head" id="appendix"><span class="sheet-no"><span class="pill">Appendix</span>목차</span><h2>Appendix · 근거 자료</h2><p class="lede">메인 장표의 숫자와 원인 분류가 나온 원본 기록. ' + esc(D.meta.asof) + '.</p>' +
